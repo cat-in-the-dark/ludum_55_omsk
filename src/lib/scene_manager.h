@@ -1,0 +1,28 @@
+#pragma once
+
+#include <functional>
+#include <memory>
+#include <string>
+#include <unordered_map>
+
+class Scene;
+
+class SceneManager {
+  std::unordered_map<std::string, std::unique_ptr<Scene>> scenes;
+  std::string current;
+  std::string next;
+
+ public:
+  SceneManager();
+
+  template <class TScene, class... TParam>
+  TScene* Register(const std::string& name, TParam&&... params) {
+    scenes.emplace(name, std::make_unique<TScene>(std::forward<TParam>(params)...));
+    return dynamic_cast<TScene*>(scenes[name].get());
+  }
+  void Change(const std::string& name);
+  bool Update();
+  bool Draw();
+
+  std::string Current() const;
+};
