@@ -1,15 +1,12 @@
 #include <raylib.h>
 #include <stdlib.h>
 
-#include <cmath>
-#include <memory>
-#include <vector>
-
 #include "const.h"
 #include "lib/scene.h"
 #include "lib/scene_manager.h"
 #include "lib/supa_scenes.h"
 #include "scenes/collisions_test_scene.h"
+#include "scenes/stress_test_scene.h"
 
 #if defined(PLATFORM_WEB)
 #include <emscripten/emscripten.h>
@@ -75,7 +72,9 @@ int main() {
 
   sm.Register<ComboScene>("test_collisions")
       ->With<CollisionsTestScene>()
-      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
+      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "stress_test");
+
+  sm.Register<ComboScene>("stress_test")->With<StressTestScene>()->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
 
   sm.Change("title");
 
