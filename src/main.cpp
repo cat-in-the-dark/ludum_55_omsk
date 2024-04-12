@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include <rlgl.h>
 #include <stdlib.h>
 
 #include "const.h"
@@ -13,8 +14,22 @@
 #include <emscripten/emscripten.h>
 #endif
 
+void DrawLineWired(std::vector<Vector2>& model, Color color) {
+  rlBegin(RL_LINES);
+  rlColor4ub(color.r, color.g, color.b, color.a);
+  for (size_t i = 0; i < model.size() - 1; i++) {
+    rlVertex2f(model[i].x, model[i].y);
+    rlVertex2f(model[i + 1].x, model[i + 1].y);
+  }
+  auto& last = model[model.size() - 1];
+  rlVertex2f(last.x, last.y);
+  rlVertex2f(model[0].x, model[0].y);
+  rlEnd();
+}
+
 class GameScene : public Scene {
   Timer timer = {2};
+  std::vector<Vector2> points = {{5, 5}, {5, 64}, {32, 90}, {64, 64}, {64, 5}};
 
  public:
   void Activate() {}
@@ -34,23 +49,8 @@ class GameScene : public Scene {
     } else {
       DrawRectangle(40, 64, 100, 64, GREEN);
     }
-  }
-};
 
-class TitleScene : public Scene {
-  SceneManager* sm;
-
- public:
-  TitleScene(SceneManager* sm) : sm(sm) {}
-  void Activate() {}
-  void Exit() {}
-  void Update() {
-    if (IsKeyPressed(KEY_SPACE)) {
-      sm->Change("game");
-    }
-  }
-  void Draw() {
-    ClearBackground(YELLOW);
+    DrawLineWired(points, BLUE);
   }
 };
 
