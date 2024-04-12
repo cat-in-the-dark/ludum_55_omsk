@@ -15,11 +15,7 @@
 #endif
 
 class GameScene : public Scene {
-  SceneManager* sm;
-
  public:
-  GameScene(SceneManager* sm) : sm(sm) {}
-
   void Activate() {}
   void Exit() {}
   void Update() {
@@ -62,7 +58,7 @@ int main() {
       ->With<TextureScene>(LoadTexture("assets/logo.png"))
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
 
-  sm.Register<ComboScene>("game")->With<GameScene>(&sm)->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
+  sm.Register<ComboScene>("game")->With<GameScene>()->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
 
   sm.Change("title");
 
