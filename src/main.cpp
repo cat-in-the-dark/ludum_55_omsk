@@ -5,6 +5,7 @@
 #include "lib/scene.h"
 #include "lib/scene_manager.h"
 #include "lib/supa_scenes.h"
+#include "lib/tasks/timer.h"
 #include "scenes/collisions_test_scene.h"
 #include "scenes/stress_test_scene.h"
 
@@ -13,6 +14,8 @@
 #endif
 
 class GameScene : public Scene {
+  Timer timer = {2};
+
  public:
   void Activate() {}
   void Exit() {}
@@ -22,11 +25,15 @@ class GameScene : public Scene {
       TraceLog(LOG_INFO, "BUM %f, %f", pos.x, pos.y);
     }
 
-    DrawRectangle(40, 64, 100, 64, BLUE);
+    timer.Update(GetFrameTime());
   }
   void Draw() {
     ClearBackground(BLACK);
-    DrawFPS(5, 5);
+    if (timer.IsPassed()) {
+      DrawRectangle(40, 64, 100, 64, BLUE);
+    } else {
+      DrawRectangle(40, 64, 100, 64, GREEN);
+    }
   }
 };
 
