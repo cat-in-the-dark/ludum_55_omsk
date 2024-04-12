@@ -49,6 +49,18 @@ class TitleScene : public Scene {
   }
 };
 
+void update(void* arg) {
+  auto sm = reinterpret_cast<SceneManager*>(arg);
+  // TODO: use pattern https://gameprogrammingpatterns.com/game-loop.html
+  sm->Update();
+  BeginDrawing();
+  if (!sm->Draw()) {
+    ClearBackground(BLACK);
+    DrawText(TextFormat("SCENE '%s' NOT FOUND", sm->Current().c_str()), 0, 0, 32, RED);
+  }
+  EndDrawing();
+}
+
 int main() {
   InitWindow(kWindowWidth, kWindowHeight, "WAVE");
 
@@ -63,18 +75,11 @@ int main() {
   sm.Change("title");
 
 #if defined(PLATFORM_WEB)
-  emscripten_set_main_loop(update, 0, 1);
+  emscripten_set_main_loop_arg(update, &sm, 0, 1);
 #else
   SetTargetFPS(60);
   while (!WindowShouldClose()) {
-    // TODO: use pattern https://gameprogrammingpatterns.com/game-loop.html
-    sm.Update();
-    BeginDrawing();
-    if (!sm.Draw()) {
-      ClearBackground(BLACK);
-      DrawText(TextFormat("SCENE '%s' NOT FOUND", sm.Current().c_str()), 0, 0, 32, RED);
-    }
-    EndDrawing();
+    update(&sm);
   }
 #endif
 
