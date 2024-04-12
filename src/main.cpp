@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 
+#include "const.h"
 #include "lib/scene.h"
 #include "lib/scene_manager.h"
 #include "lib/supa_scenes.h"
@@ -53,7 +54,7 @@ class TitleScene : public Scene {
 };
 
 int main() {
-  InitWindow(800, 600, "WAVE");
+  InitWindow(kWindowWidth, kWindowHeight, "WAVE");
 
   SceneManager sm;
 
