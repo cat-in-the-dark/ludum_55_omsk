@@ -9,6 +9,7 @@
 #include "lib/scene.h"
 #include "lib/scene_manager.h"
 #include "lib/supa_scenes.h"
+#include "scenes/collisions_test_scene.h"
 
 #if defined(PLATFORM_WEB)
 #include <emscripten/emscripten.h>
@@ -70,7 +71,11 @@ int main() {
       ->With<TextureScene>(LoadTexture("assets/logo.png"))
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
 
-  sm.Register<ComboScene>("game")->With<GameScene>()->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
+  sm.Register<ComboScene>("game")->With<GameScene>()->With<KeyAwaitScene>(&sm, KEY_SPACE, "test_collisions");
+
+  sm.Register<ComboScene>("test_collisions")
+      ->With<CollisionsTestScene>()
+      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
 
   sm.Change("title");
 

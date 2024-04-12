@@ -65,6 +65,8 @@ endif()
 
 add_subdirectory(${THIRDPARTY_DIR}/raylib)
 
+target_include_directories(${PROJECT_NAME} PRIVATE src)
+
 target_include_directories(${PROJECT_NAME} PUBLIC SYSTEM vendor/raylib/src)
 target_link_libraries(${PROJECT_NAME} raylib)
 
