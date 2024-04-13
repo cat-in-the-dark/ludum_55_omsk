@@ -2,6 +2,7 @@
 
 #include "const.h"
 #include "lib/math.h"
+#include "lib/renderer.h"
 
 Segment::Segment(Vector2 p1, Vector2 p2, float lifetime) : p1(p1), p2(p2), lifetime(lifetime) {}
 float Segment::Length() const {
@@ -18,7 +19,7 @@ void Line::Draw() {
     return;
   }
   for (const auto& segment : segments) {
-    DrawLine(segment.p1.x, segment.p1.y, segment.p2.x, segment.p2.y, segment.color);
+    DrawLineThick(segment.p1, segment.p2, 2, segment.color);
   }
 }
 
