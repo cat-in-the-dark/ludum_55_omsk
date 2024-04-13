@@ -14,11 +14,11 @@ void TestRenderScene::Activate() {
 void TestRenderScene::Exit() {}
 void TestRenderScene::Update() {
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-    wave_systems.emplace_back(SpawnTriangle(tri, 10, 120));
+    line_systems.emplace_back(SpawnLines(tri, kWaveLivetime, 3));
   }
 
-  for (auto& ws : wave_systems) {
-    ws.Update(GetFrameTime());
+  for (auto& ls : line_systems) {
+    ls.Update(GetFrameTime());
   }
 
   CheckCollisions();
@@ -29,37 +29,37 @@ void TestRenderScene::Draw() {
     DrawTriangle(tri.p1, tri.p2, tri.p3, RED);
   }
 
-  for (auto& ws : wave_systems) {
-    ws.Draw();
-  }
-
   for (auto& bh : black_holes) {
     bh.Draw();
   }
   for (auto& cr : circle_wall) {
     cr.Draw();
   }
+
+  for (auto& ls : line_systems) {
+    ls.Draw();
+  }
 }
 
 void TestRenderScene::CheckCollisions() {
-  for (auto& ws : wave_systems) {
-    for (auto& particle : ws.particles) {
+  for (auto& ls : line_systems) {
+    for (auto& particle : ls.particles) {
+      const auto& pos = particle.Pos();
+
       for (auto& bh : black_holes) {
-        float dist = Vector2Distance(bh.pos, particle.pos);
-        auto dir = Vector2Normalize(bh.pos - particle.pos);
+        float dist = Vector2Distance(bh.pos, pos);
+        auto dir = Vector2Normalize(bh.pos - pos);
 
         if (dist <= bh.radius / 2) {
-          particle.alive = false;
-          particle.pos = bh.pos;
-          particle.dir = {0, 0};
+          particle.Stop();
         } else {
           auto pwr = 100.0 / (dist * dist);
           particle.dir = particle.dir + dir * pwr;
         }
       }
       for (auto& cr : circle_wall) {
-        if (CheckCollisionPointCircle(particle.pos, cr.pos, cr.radius)) {
-          auto n = Vector2Normalize(cr.pos - particle.pos);
+        if (CheckCollisionPointCircle(pos, cr.pos, cr.radius)) {
+          auto n = Vector2Normalize(cr.pos - pos);
           auto d = Vector2Refract(particle.dir, n, 1);
           particle.dir = d;
         }

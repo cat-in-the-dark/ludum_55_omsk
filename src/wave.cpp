@@ -2,6 +2,8 @@
 
 #include <rlgl.h>
 
+#include "lib/math.h"
+
 WaveParticle::WaveParticle(Vector2 pos, Vector2 dir, Vector2 speed) : pos(pos), dir(dir), speed(speed) {}
 void WaveParticle::Update(float dt) {
   pos.x += dir.x * speed.x * dt;
@@ -67,14 +69,6 @@ void WaveSystem::Draw() {
   // for (auto& p : points) {
   //   DrawCircle(p.x, p.y, 1, RED);
   // }
-}
-
-Vector2 Lerp2D(const Vector2& v1, const Vector2& v2, float t) {
-  return Vector2{Lerp(v1.x, v2.x, t), Lerp(v1.y, v2.y, t)};
-}
-
-inline Triangle2D Tri60() {
-  return {{0, -1}, {-float(std::sqrt(3)) / 2.0f, 0.5}, {float(std::sqrt(3)) / 2.0f, 0.5}};
 }
 
 WaveSystem SpawnTriangle(Triangle2D tri, float lifetime, float speed) {
