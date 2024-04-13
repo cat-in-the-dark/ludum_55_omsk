@@ -9,14 +9,14 @@ StressTestScene::StressTestScene() : count_{100}, currentTest_{0} {
   tests_ = {[this]() {
               for (auto i = 0; i < count_; i++) {
                 auto color = getRandomColor();
-                DrawCircleLines(GetRandomValue(0, kWindowWidth), GetRandomValue(0, kWindowHeight), 10.0f, color);
+                DrawCircleLines(GetRandomValue(0, kCanvasWidth), GetRandomValue(0, kCanvasHeight), 10.0f, color);
               }
             },
             [this]() {
               for (auto i = 0; i < count_; i++) {
                 auto color = getRandomColor();
-                DrawLineThick(GetRandomValue(0, kWindowWidth), GetRandomValue(0, kWindowHeight),
-                              GetRandomValue(0, kWindowWidth), GetRandomValue(0, kWindowHeight), 5.0f, color);
+                DrawLineThick(GetRandomValue(0, kCanvasWidth), GetRandomValue(0, kCanvasHeight),
+                              GetRandomValue(0, kCanvasWidth), GetRandomValue(0, kCanvasHeight), 5.0f, color);
               }
             }};
 }
