@@ -8,6 +8,7 @@
 #include "scenes/collisions_test_scene.h"
 #include "scenes/game_scene.h"
 #include "scenes/stress_test_scene.h"
+#include "scenes/test_render.h"
 
 #if defined(PLATFORM_WEB)
 #include <emscripten/emscripten.h>
@@ -30,8 +31,12 @@ int main() {
 
   SceneManager sm;
 
-  sm.Register<ComboScene>("title")
+  sm.Register<ComboScene>("logo")
       ->With<TextureScene>(LoadTexture("assets/logo.png"))
+      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
+
+  sm.Register<ComboScene>("title")
+      ->With<TextureScene>(LoadTexture("assets/main.png"))
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
 
   sm.Register<ComboScene>("game")->With<GameScene>()->With<KeyAwaitScene>(&sm, KEY_SPACE, "test_collisions");
@@ -42,7 +47,17 @@ int main() {
 
   sm.Register<ComboScene>("stress_test")->With<StressTestScene>()->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
 
-  sm.Change("title");
+  sm.Register<ComboScene>("gameover")
+      ->With<TextureScene>(LoadTexture("assets/lose.png"))
+      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "logo");
+
+  // sm.Register<ComboScene>("gamewin")
+  //     ->With<TextureScene>(LoadTexture("assets/win.png"))
+  //     ->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
+
+  sm.Register<ComboScene>("test_render")->With<TestRenderScene>()->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
+
+  sm.Change("test_render");
 
 #if defined(PLATFORM_WEB)
   emscripten_set_main_loop_arg(update, &sm, 0, 1);
