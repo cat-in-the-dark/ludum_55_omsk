@@ -1,6 +1,7 @@
 #include "game_scene.h"
 
 #include "lib/renderer.h"
+#include "lib/types.h"
 
 void GameScene::Activate() {
   curve->set_steps(20);
@@ -22,7 +23,21 @@ void GameScene::Update() {
     TraceLog(LOG_INFO, "BUM %f, %f", pos.x, pos.y);
   }
 
-  timer.Update(GetFrameTime());
+  auto dt = GetFrameTime();
+  const auto player_speed = 50.0f * dt;
+
+  if (IsKeyDown(KEY_DOWN)) {
+    player.position.y += player_speed;
+  } else if (IsKeyDown(KEY_UP)) {
+    player.position.y -= player_speed;
+  } else if (IsKeyDown(KEY_RIGHT)) {
+    player.position.x += player_speed;
+  } else if (IsKeyDown(KEY_LEFT)) {
+    player.position.x -= player_speed;
+  }
+
+  player.Update(dt);
+  timer.Update(dt);
 }
 
 void GameScene::Draw() {
@@ -40,4 +55,5 @@ void GameScene::Draw() {
     outPoints.push_back({static_cast<float>(point.x), static_cast<float>(point.y)});
   }
   DrawLines(outPoints, 5.0f, GREEN);
+  player.Draw();
 }
