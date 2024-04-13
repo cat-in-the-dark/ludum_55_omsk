@@ -14,7 +14,7 @@ void TestRenderScene::Activate() {
 void TestRenderScene::Exit() {}
 void TestRenderScene::Update() {
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-    line_systems.emplace_back(SpawnLines(tri, kWaveLivetime, 3));
+    line_systems.emplace_back(SpawnTriangle(tri, kWaveLivetime, 3));
   }
 
   for (auto& ls : line_systems) {

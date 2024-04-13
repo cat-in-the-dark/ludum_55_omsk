@@ -62,4 +62,4 @@ class LineSystem {
   }
 };
 
-LineSystem SpawnLines(Triangle2D tri, float lifetime, float speed);
+LineSystem SpawnTriangle(Triangle2D tri, float lifetime, float speed);

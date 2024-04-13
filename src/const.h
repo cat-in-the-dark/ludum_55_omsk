@@ -1,7 +1,8 @@
 #pragma once
 
-constexpr auto kWindowWidth = 800;
-constexpr auto kWindowHeight = 600;
+// 80/45
+constexpr auto kWindowWidth = 640;
+constexpr auto kWindowHeight = 360;
 
 constexpr auto kLineThickness = 3.0f;
 

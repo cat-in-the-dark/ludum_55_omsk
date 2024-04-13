@@ -76,7 +76,7 @@ void LineSystem::Draw() {
   }
 }
 
-LineSystem SpawnLines(Triangle2D tri, float lifetime, float speed) {
+LineSystem SpawnTriangle(Triangle2D tri, float lifetime, float speed) {
   LineSystem ls(lifetime);
 
   auto triDir = Tri60();

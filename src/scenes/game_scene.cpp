@@ -51,9 +51,10 @@ void GameScene::Update() {
     }
     for (auto& ws : wave_systems) {
       for (auto& particle : ws.particles) {
+        const auto& pos = particle.Pos();
         for (auto& cr : game_world->walls) {
-          if (CheckCollisionPointCircle(particle.pos, cr.pos, cr.radius)) {
-            auto n = Vector2Normalize(cr.pos - particle.pos);
+          if (CheckCollisionPointCircle(pos, cr.pos, cr.radius)) {
+            auto n = Vector2Normalize(cr.pos - pos);
             auto d = Vector2Refract(particle.dir, n, 1);
             particle.dir = d;
           }

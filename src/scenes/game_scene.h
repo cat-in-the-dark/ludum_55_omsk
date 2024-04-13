@@ -11,7 +11,7 @@
 #include "entities/player.h"
 #include "lib/scene.h"
 #include "lib/tasks/timer.h"
-#include "wave.h"
+#include "line.h"
 
 namespace balance {
 constexpr auto kWaveSpeed = 50.0f;
@@ -27,7 +27,7 @@ std::unique_ptr<GameWorld> createLevel1();
 
 class GameScene : public Scene {
   std::unique_ptr<GameWorld> game_world;
-  std::list<WaveSystem> wave_systems;
+  std::list<LineSystem> wave_systems;
 
  public:
   void Activate();
