@@ -51,10 +51,10 @@ void WaveSystem::Draw() {
     return;
   }
 
-  // drawLineWired(points, RED);
-  for (auto& p : points) {
-    DrawCircle(p.x, p.y, 1, RED);
-  }
+  drawLineWired(points, RED);
+  // for (auto& p : points) {
+  //   DrawCircle(p.x, p.y, 1, RED);
+  // }
 }
 
 Vector2 Lerp2D(const Vector2& v1, const Vector2& v2, float t) {
@@ -65,24 +65,32 @@ inline Triangle2D Tri60() {
   return {{0, -1}, {-float(std::sqrt(3)) / 2.0f, 0.5}, {float(std::sqrt(3)) / 2.0f, 0.5}};
 }
 
-WaveSystem SpawnTriangle(Triangle2D tri, float lifetime) {
+WaveSystem SpawnTriangle(Triangle2D tri, float lifetime, float speed) {
   WaveSystem ws(lifetime);
 
   auto triDir = Tri60();
+
+  Vector2 speed_vec{speed, speed};
 
   for (int i = 0; i < n_particles; i++) {
     float t = float(i) / float(n_particles);
     auto e1 = Lerp2D(tri.p1, tri.p2, t);
     auto dir1 = Lerp2D(triDir.p1, triDir.p2, t);
-    ws.AddParticle(WaveParticle(e1, dir1, {30, 30}));
+    ws.AddParticle(WaveParticle(e1, dir1, speed_vec));
+  }
 
+  for (int i = 0; i < n_particles; i++) {
+    float t = float(i) / float(n_particles);
     auto e2 = Lerp2D(tri.p2, tri.p3, t);
     auto dir2 = Lerp2D(triDir.p2, triDir.p3, t);
-    ws.AddParticle(WaveParticle(e2, dir2, {30, 30}));
+    ws.AddParticle(WaveParticle(e2, dir2, speed_vec));
+  }
 
+  for (int i = 0; i < n_particles; i++) {
+    float t = float(i) / float(n_particles);
     auto e3 = Lerp2D(tri.p3, tri.p1, t);
     auto dir3 = Lerp2D(triDir.p3, triDir.p1, t);
-    ws.AddParticle(WaveParticle(e3, dir3, {30, 30}));
+    ws.AddParticle(WaveParticle(e3, dir3, speed_vec));
   }
 
   return ws;

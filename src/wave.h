@@ -4,7 +4,7 @@
 
 #include "lib/types.h"
 
-const int n_particles = 32;
+const int n_particles = 512;
 
 class WaveParticle {
  public:
@@ -32,4 +32,4 @@ class WaveSystem {
   bool Alive() const;
 };
 
-WaveSystem SpawnTriangle(Triangle2D tri, float lifetime);
+WaveSystem SpawnTriangle(Triangle2D tri, float lifetime, float speed);
