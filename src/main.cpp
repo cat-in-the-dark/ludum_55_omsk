@@ -10,24 +10,62 @@
 #include "scenes/stress_test_scene.h"
 #include "scenes/test_render.h"
 
+#if defined(PLATFORM_DESKTOP)
+#define GLSL_VERSION 330
+#else  // PLATFORM_RPI, PLATFORM_ANDROID, PLATFORM_WEB
+#define GLSL_VERSION 100
+#endif
+
 #if defined(PLATFORM_WEB)
 #include <emscripten/emscripten.h>
 #endif
+
+static Shader bloom;
+
+static RenderTexture2D canvas;
+static Rectangle canvasRect = {0, 0, kCanvasWidth, -kCanvasHeight};
+static Vector2 canvasOrigin = {0, 0};
+
+static Rectangle get_pixel_perfect_layout(int cw, int ch) {
+  float sw = GetScreenWidth();
+  float sh = GetScreenHeight();
+
+  auto scale = fmin(sw / cw, sh / ch);
+
+  return {
+      (sw - cw * scale) * 0.5f,
+      (sh - ch * scale) * 0.5f,
+      cw * scale,
+      ch * scale,
+  };
+}
 
 void update(void* arg) {
   auto sm = reinterpret_cast<SceneManager*>(arg);
   // TODO: use pattern https://gameprogrammingpatterns.com/game-loop.html
   sm->Update();
-  BeginDrawing();
+  BeginTextureMode(canvas);
   if (!sm->Draw()) {
     ClearBackground(BLACK);
     DrawText(TextFormat("SCENE '%s' NOT FOUND", sm->Current().c_str()), 0, 0, 32, RED);
   }
+  EndTextureMode();
+
+  Rectangle windowRec = get_pixel_perfect_layout(kCanvasWidth, kCanvasHeight);
+  BeginDrawing();
+  BeginShaderMode(bloom);
+  DrawTexturePro(canvas.texture, canvasRect, windowRec, canvasOrigin, 0.0f, WHITE);
+  EndShaderMode();
   EndDrawing();
 }
 
 int main() {
   InitWindow(kWindowWidth, kWindowHeight, "WAVE");
+
+  bloom = LoadShader(0, TextFormat("assets/shaders/glsl%i/bloom.fs", GLSL_VERSION));
+  canvas = LoadRenderTexture(kCanvasWidth, kCanvasHeight);
+  SetTextureFilter(canvas.texture, TEXTURE_FILTER_POINT);
+  // ToggleFullscreen();
 
   SceneManager sm;
 
@@ -68,6 +106,8 @@ int main() {
   }
 #endif
 
+  UnloadRenderTexture(canvas);
+  UnloadShader(bloom);
   CloseWindow();
 
   return 0;
