@@ -2,6 +2,8 @@
 
 #include <raylib.h>
 
+#include <memory>
+
 #include "entity.h"
 #include "lib/types.h"
 
