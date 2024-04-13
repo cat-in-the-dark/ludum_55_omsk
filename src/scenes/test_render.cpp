@@ -26,9 +26,7 @@ void TestRenderScene::Update() {
 }
 void TestRenderScene::Draw() {
   ClearBackground(BLACK);
-  if (kDebugRender) {
-    DrawTriangle(tri.p1, tri.p2, tri.p3, RED);
-  }
+  DrawTriangle(tri.p1, tri.p2, tri.p3, RED);
 
   for (auto& bh : black_holes) {
     bh.Draw();

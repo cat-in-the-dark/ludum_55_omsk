@@ -4,7 +4,8 @@
 #include "lib/math.h"
 #include "lib/renderer.h"
 
-Segment::Segment(Vector2 p1, Vector2 p2, float lifetime) : p1(p1), p2(p2), lifetime(lifetime) {}
+Segment::Segment(Vector2 p1, Vector2 p2, float lifetime, float elapsed)
+    : p1(p1), p2(p2), lifetime(lifetime), elapsed(elapsed) {}
 float Segment::Length() const {
   return Vector2Distance(p1, p2);
 }
@@ -19,7 +20,9 @@ void Segment::Draw() {
   if (!Alive()) {
     return;
   }
-  DrawLineThick(p1, p2, 2, color);
+  Color c = color;
+  c.a = 255 * (lifetime - elapsed) / lifetime;
+  DrawLineThick(p1, p2, 2, c);
 }
 
 Line::Line(Vector2 start, Vector2 dir, float speed, float lifetime, float segment_lifetime)
@@ -49,7 +52,7 @@ bool Line::Update(float dt) {
   last.p2.x += dir.x * speed;
   last.p2.y += dir.y * speed;
 
-  if (last.Length() > max_segment_len) {
+  if (last.Length() > kMaxSegmentLen) {
     SpawnSegment();
   }
 
@@ -58,7 +61,10 @@ bool Line::Update(float dt) {
 
 void Line::SpawnSegment() {
   const auto& last = segments[segments.size() - 1];
-  segments.emplace_back(last.p2, last.p2, segment_lifetime);
+
+  auto progress = elapsed / lifetime;
+  auto segment_elapsed_already = progress * progress * segment_lifetime;
+  segments.emplace_back(last.p2, last.p2, segment_lifetime, segment_elapsed_already);
 }
 
 const Vector2& Line::Pos() const {
