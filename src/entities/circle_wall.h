@@ -9,4 +9,5 @@ class CircleWall {
 
   CircleWall(Vector2 pos, float radius);
   void Update(float dt);
+  void Draw();
 };

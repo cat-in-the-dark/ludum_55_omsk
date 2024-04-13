@@ -28,7 +28,9 @@ void WaveSystem::Update(float dt) {
   points.clear();
   // TODO: generate spline
   for (auto& particle : particles) {
-    points.emplace_back(particle.pos);
+    if (particle.alive) {
+      points.emplace_back(particle.pos);
+    }
   }
 }
 
@@ -46,12 +48,22 @@ void drawLineWired(std::vector<Vector2>& model, Color color) {
   rlEnd();
 }
 
+void drawSegmentsWired(std::vector<WaveParticle>& model, Color color) {
+  for (size_t i = 0; i < model.size() - 1; i++) {
+    if (!model[i].alive || !model[i + 1].alive) {
+      continue;
+    }
+    DrawLine(model[i].pos.x, model[i].pos.y, model[i + 1].pos.x, model[i + 1].pos.y, color);
+  }
+}
+
 void WaveSystem::Draw() {
   if (!Alive()) {
     return;
   }
 
-  drawLineWired(points, RED);
+  drawSegmentsWired(particles, RED);
+  // drawLineWired(points, RED);
   // for (auto& p : points) {
   //   DrawCircle(p.x, p.y, 1, RED);
   // }

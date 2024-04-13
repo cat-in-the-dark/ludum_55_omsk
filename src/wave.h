@@ -11,6 +11,7 @@ class WaveParticle {
   Vector2 pos;
   Vector2 dir;
   Vector2 speed;
+  bool alive = true;
 
   WaveParticle(Vector2 pos, Vector2 dir, Vector2 speed);
   void Update(float dt);
