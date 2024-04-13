@@ -3,6 +3,7 @@
 #include <raylib.h>
 
 #include "const.h"
+#include "lib/renderer.h"
 
 StressTestScene::StressTestScene() : count_{100}, currentTest_{0} {
   tests_ = {[this]() {
@@ -14,8 +15,8 @@ StressTestScene::StressTestScene() : count_{100}, currentTest_{0} {
             [this]() {
               for (auto i = 0; i < count_; i++) {
                 auto color = getRandomColor();
-                DrawLine(GetRandomValue(0, kWindowWidth), GetRandomValue(0, kWindowHeight),
-                         GetRandomValue(0, kWindowWidth), GetRandomValue(0, kWindowHeight), color);
+                DrawLineThick(GetRandomValue(0, kWindowWidth), GetRandomValue(0, kWindowHeight),
+                              GetRandomValue(0, kWindowWidth), GetRandomValue(0, kWindowHeight), 5.0f, color);
               }
             }};
 }
