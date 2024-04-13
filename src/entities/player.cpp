@@ -8,5 +8,5 @@
 void Player::Update(__attribute__((unused)) float dt) {}
 
 void Player::Draw() {
-  DrawTriangleLinesThick(getPlayerShape(), kLineThickness, color_);
+  DrawTriangleLinesThick(GetPlayerShape(), kLineThickness, color_);
 }

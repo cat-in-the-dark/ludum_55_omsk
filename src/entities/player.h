@@ -20,16 +20,17 @@ class Player : public Entity {
 
   Vector2 position;
 
+  Triangle2D GetPlayerShape() {
+    return {shape_.p1 + position, shape_.p2 + position, shape_.p3 + position};
+  }
+
  private:
   Triangle2D createPlayerShape(float radius) {
     auto vec = Vector2{0, -radius};
+    // angles move clockwise...
     auto p1 = Vector2Scale(vec, 2.0f);
-    auto p2 = Vector2Rotate(vec, 2 * PI / 3);
-    auto p3 = Vector2Rotate(vec, 4 * PI / 3);
+    auto p2 = Vector2Rotate(vec, 4 * PI / 3);
+    auto p3 = Vector2Rotate(vec, 2 * PI / 3);
     return {p1, p2, p3};
-  }
-
-  Triangle2D getPlayerShape() {
-    return {shape_.p1 + position, shape_.p2 + position, shape_.p3 + position};
   }
 };
