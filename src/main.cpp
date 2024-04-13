@@ -2,6 +2,7 @@
 #include <rlgl.h>
 #include <stdlib.h>
 
+#include "CatmullRom.h"
 #include "const.h"
 #include "lib/scene.h"
 #include "lib/scene_manager.h"
@@ -30,9 +31,20 @@ void DrawLineWired(std::vector<Vector2>& model, Color color) {
 class GameScene : public Scene {
   Timer timer = {2};
   std::vector<Vector2> points = {{5, 5}, {5, 64}, {32, 90}, {64, 64}, {64, 5}};
+  std::unique_ptr<Curve> curve = std::make_unique<CatmullRom>();
 
  public:
-  void Activate() {}
+  void Activate() {
+    curve->set_steps(20);
+    curve->clear();
+    auto& first = *points.begin();
+    auto& last = *points.rbegin();
+    curve->add_way_point({last.x, last.y, 0.0});
+    for (auto& p : points) {
+      curve->add_way_point({p.x, p.y, 0.0});
+    }
+    curve->add_way_point({first.x, first.y, 0.0});
+  }
   void Exit() {}
   void Update() {
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -51,6 +63,12 @@ class GameScene : public Scene {
     }
 
     DrawLineWired(points, BLUE);
+    std::vector<Vector2> outPoints;
+    for (int i = 0; i < curve->node_count(); ++i) {
+      auto&& point = curve->node(i);
+      outPoints.push_back({static_cast<float>(point.x), static_cast<float>(point.y)});
+    }
+    DrawLineWired(outPoints, GREEN);
   }
 };
 
