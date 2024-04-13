@@ -70,7 +70,6 @@ WaveSystem SpawnTriangle(Triangle2D tri, float lifetime) {
 
   auto triDir = Tri60();
 
-  int n_particles = 1000;
   for (int i = 0; i < n_particles; i++) {
     float t = float(i) / float(n_particles);
     auto e1 = Lerp2D(tri.p1, tri.p2, t);

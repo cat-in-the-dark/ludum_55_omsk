@@ -4,6 +4,8 @@
 
 #include "lib/types.h"
 
+const int n_particles = 32;
+
 class WaveParticle {
  public:
   Vector2 pos;
@@ -15,12 +17,13 @@ class WaveParticle {
 };
 
 class WaveSystem {
-  std::vector<WaveParticle> particles;
   std::vector<Vector2> points;  // которые генерит spline
   float lifetime;
   float elapsed;
 
  public:
+  std::vector<WaveParticle> particles;
+
   WaveSystem(float lifetime);
   void AddParticle(WaveParticle particle);
 
