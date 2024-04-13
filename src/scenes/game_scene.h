@@ -26,9 +26,6 @@ struct GameWorld {
 std::unique_ptr<GameWorld> createLevel1();
 
 class GameScene : public Scene {
-  Timer timer = {2};
-  std::vector<Vector2> points = {{50, 50}, {55, 114}, {82, 140}, {114, 114}, {114, 50}};
-  std::unique_ptr<Curve> curve = std::make_unique<CatmullRom>();
   std::unique_ptr<GameWorld> game_world;
   std::list<WaveSystem> wave_systems;
 
