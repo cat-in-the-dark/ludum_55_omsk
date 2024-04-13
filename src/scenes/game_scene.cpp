@@ -58,7 +58,7 @@ void GameScene::Draw() {
 std::unique_ptr<GameWorld> createLevel1() {
   auto player = Player{{100.0f, 100.0f}};
   std::vector<CircleWall> circles = {{{500.0f, 0.0f}, 200.0f}};
-  auto res = GameWorld{player, std::move(circles), {}, {450.0f, 250.0f}};
+  auto res = GameWorld{player, std::move(circles), {{{30.0f, 320.0f}, 30.0f}}, {450.0f, 250.0f}};
   return std::make_unique<GameWorld>(std::move(res));
 }
 
