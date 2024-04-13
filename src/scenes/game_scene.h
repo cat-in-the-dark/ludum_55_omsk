@@ -12,7 +12,7 @@
 
 struct GameWorld {
   Player player;
-  std::vector<Circle> maze;
+  std::vector<Circle> walls;
 };
 
 std::unique_ptr<GameWorld> createLevel1();

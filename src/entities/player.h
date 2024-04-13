@@ -7,7 +7,7 @@
 #include "entity.h"
 #include "lib/types.h"
 
-constexpr auto kPlayerSize = 10.0f;
+constexpr auto kPlayerSize = 15.0f;
 
 class Player : public Entity {
   Color color_{GREEN};

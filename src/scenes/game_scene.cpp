@@ -1,6 +1,7 @@
 #include "game_scene.h"
 
 #include "entities/player.h"
+#include "lib/collisions.h"
 #include "lib/renderer.h"
 #include "lib/types.h"
 
@@ -28,7 +29,7 @@ void GameScene::Update() {
   }
 
   auto dt = GetFrameTime();
-  const auto player_speed = 50.0f * dt;
+  const auto player_speed = 100.0f * dt;
 
   auto& player = game_world->player;
   if (IsKeyDown(KEY_DOWN)) {
@@ -39,6 +40,15 @@ void GameScene::Update() {
     player.position.x += player_speed;
   } else if (IsKeyDown(KEY_LEFT)) {
     player.position.x -= player_speed;
+  }
+
+  // TODO: move to the separate collision-checking function
+  auto& pos = player.position;
+  for (auto& wall : game_world->walls) {
+    if (CheckCollisionCircles(pos, kPlayerSize, wall.center, wall.radius)) {
+      auto dir = Vector2Normalize(pos - wall.center);
+      pos = wall.center + Vector2Scale(dir, kPlayerSize + wall.radius);
+    }
   }
 
   player.Update(dt);
@@ -60,12 +70,17 @@ void GameScene::Draw() {
     outPoints.push_back({static_cast<float>(point.x), static_cast<float>(point.y)});
   }
   DrawLines(outPoints, 5.0f, GREEN);
+
+  // DEBUG ONLY
+  for (auto& wall : game_world->walls) {
+    DrawCircleLines(wall.center.x, wall.center.y, wall.radius, WHITE);
+  }
   game_world->player.Draw();
 }
 
 std::unique_ptr<GameWorld> createLevel1() {
   auto player = Player{{100.0f, 100.0f}};
-  std::vector<Circle> circles = {{{100.0f, 100.0f}, 100.0f}};
+  std::vector<Circle> circles = {{{500.0f, 300.0f}, 200.0f}};
   auto res = GameWorld{player, circles};
   return std::make_unique<GameWorld>(std::move(res));
 }
