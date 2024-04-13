@@ -13,11 +13,6 @@
 #include "lib/tasks/timer.h"
 #include "line.h"
 
-namespace balance {
-constexpr auto kWaveSpeed = 50.0f;
-constexpr auto kWaveLifetime = 5.0f;
-};  // namespace balance
-
 struct GameWorld {
   Player player;
   std::vector<CircleWall> walls;

@@ -8,12 +8,13 @@ class Segment {
  public:
   Vector2 p1;
   Vector2 p2;
-  float elapsed;
+  float elapsed = 0;
   float lifetime;
   Color color = RED;
 
   Segment(Vector2 p1, Vector2 p2, float lifetime);
-
+  bool Update(float dt);  // если сегмент закончился то тут false
+  void Draw();
   float Length() const;
   bool Alive() const {
     return elapsed <= lifetime;
@@ -22,6 +23,8 @@ class Segment {
 
 class Line {
   std::vector<Segment> segments;
+  bool alive = true;
+  void SpawnSegment();
 
  public:
   Vector2 dir;
@@ -33,13 +36,13 @@ class Line {
   float max_segment_len = 5;
 
   Line(Vector2 start, Vector2 dir, float speed, float lifetime, float segment_lifetime);
-  void Update(float dt);
+  bool Update(float dt);  // если линия закончилась, то тут false
   void Draw();
-  bool Alive() const {
-    return elapsed <= lifetime;
+  bool StoppedGenerating() const {
+    return elapsed >= lifetime || speed <= 0;
   }
+  bool Alive() const;
 
-  void SpawnSegment();
   const Vector2& Pos() const;
 
   void Stop();  // by black hole
@@ -47,7 +50,7 @@ class Line {
 
 class LineSystem {
   float lifetime;
-  float elapsed;
+  bool alive = true;
 
  public:
   std::vector<Line> particles;
@@ -58,8 +61,8 @@ class LineSystem {
   void Update(float dt);
   void Draw();
   bool Alive() const {
-    return elapsed <= lifetime;
+    return alive;
   }
 };
 
-LineSystem SpawnTriangle(Triangle2D tri, float lifetime, float speed);
+LineSystem SpawnTriangle(Triangle2D tri, float lifetime, float segment_lifetime, float speed);

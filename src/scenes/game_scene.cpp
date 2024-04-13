@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "balance.h"
 #include "entities/player.h"
 #include "lib/collisions.h"
 #include "lib/renderer.h"
@@ -16,8 +17,8 @@ void GameScene::Exit() {}
 
 void GameScene::Update() {
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-    wave_systems.emplace_back(
-        SpawnTriangle(game_world->player.GetPlayerShape(), balance::kWaveLifetime, balance::kWaveSpeed));
+    wave_systems.emplace_back(SpawnTriangle(game_world->player.GetPlayerShape(), balance::kWaveLifetime,
+                                            balance::kWaveSegmentLifetime, balance::kWaveSpeed));
   }
 
   auto dt = GetFrameTime();

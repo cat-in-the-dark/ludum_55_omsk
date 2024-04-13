@@ -1,6 +1,7 @@
 #include "test_render.h"
 
 #include "../const.h"
+#include "balance.h"
 
 TestRenderScene::TestRenderScene()
     : tri({{0 + 300, 200 + 10.0f},
@@ -14,7 +15,7 @@ void TestRenderScene::Activate() {
 void TestRenderScene::Exit() {}
 void TestRenderScene::Update() {
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-    line_systems.emplace_back(SpawnTriangle(tri, kWaveLivetime, 3));
+    line_systems.emplace_back(SpawnTriangle(tri, balance::kWaveLifetime, balance::kWaveSegmentLifetime, 3));
   }
 
   for (auto& ls : line_systems) {

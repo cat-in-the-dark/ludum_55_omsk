@@ -8,6 +8,19 @@ Segment::Segment(Vector2 p1, Vector2 p2, float lifetime) : p1(p1), p2(p2), lifet
 float Segment::Length() const {
   return Vector2Distance(p1, p2);
 }
+bool Segment::Update(float dt) {
+  if (!Alive()) {
+    return false;
+  }
+  elapsed += dt;
+  return true;
+}
+void Segment::Draw() {
+  if (!Alive()) {
+    return;
+  }
+  DrawLineThick(p1, p2, 2, color);
+}
 
 Line::Line(Vector2 start, Vector2 dir, float speed, float lifetime, float segment_lifetime)
     : dir(dir), speed(speed), lifetime(lifetime), segment_lifetime(segment_lifetime) {
@@ -15,20 +28,22 @@ Line::Line(Vector2 start, Vector2 dir, float speed, float lifetime, float segmen
 }
 
 void Line::Draw() {
-  if (!Alive()) {
-    return;
-  }
-  for (const auto& segment : segments) {
-    DrawLineThick(segment.p1, segment.p2, 2, segment.color);
+  for (auto& segment : segments) {
+    segment.Draw();
   }
 }
 
-void Line::Update(float dt) {
-  if (!Alive()) {
-    return;
+bool Line::Update(float dt) {
+  alive = false;
+  for (auto& segment : segments) {
+    // если все сегменты закончились, то и линия закончилась
+    alive = segment.Update(dt) || alive;
   }
 
   elapsed += dt;
+  if (StoppedGenerating()) {
+    return alive;
+  }
 
   auto& last = segments[segments.size() - 1];
   last.p2.x += dir.x * speed;
@@ -37,6 +52,8 @@ void Line::Update(float dt) {
   if (last.Length() > max_segment_len) {
     SpawnSegment();
   }
+
+  return alive;
 }
 
 void Line::SpawnSegment() {
@@ -58,30 +75,21 @@ void LineSystem::AddParticle(const Line& particle) {
   particles.emplace_back(particle);
 }
 void LineSystem::Update(float dt) {
-  if (!Alive()) {
-    return;
-  }
-
+  alive = false;
   for (auto& line : particles) {
-    line.Update(dt);
+    alive = line.Update(dt) || alive;
   }
 }
 void LineSystem::Draw() {
-  if (!Alive()) {
-    return;
-  }
-
   for (auto& line : particles) {
     line.Draw();
   }
 }
 
-LineSystem SpawnTriangle(Triangle2D tri, float lifetime, float speed) {
-  LineSystem ls(lifetime);
+LineSystem SpawnTriangle(Triangle2D tri, float lifetime, float segment_lifetime, float speed) {
+  LineSystem ls(lifetime * 2);
 
   auto triDir = Tri60();
-
-  const float segment_lifetime = 2;
 
   for (int i = 0; i < kWaveLines; i++) {
     float t = float(i) / float(kWaveLines);
