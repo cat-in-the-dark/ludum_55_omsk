@@ -27,6 +27,7 @@ else()
         -Wall
         -Werror
         -Wextra
+        -Wno-unused-parameter
         -Wno-unused-command-line-argument
     )
 endif()
