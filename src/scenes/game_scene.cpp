@@ -1,9 +1,13 @@
 #include "game_scene.h"
 
+#include "entities/player.h"
 #include "lib/renderer.h"
 #include "lib/types.h"
 
 void GameScene::Activate() {
+  // TODO: generate other levels later
+  game_world = createLevel1();
+
   curve->set_steps(20);
   curve->clear();
   auto& first = *points.begin();
@@ -26,6 +30,7 @@ void GameScene::Update() {
   auto dt = GetFrameTime();
   const auto player_speed = 50.0f * dt;
 
+  auto& player = game_world->player;
   if (IsKeyDown(KEY_DOWN)) {
     player.position.y += player_speed;
   } else if (IsKeyDown(KEY_UP)) {
@@ -55,5 +60,12 @@ void GameScene::Draw() {
     outPoints.push_back({static_cast<float>(point.x), static_cast<float>(point.y)});
   }
   DrawLines(outPoints, 5.0f, GREEN);
-  player.Draw();
+  game_world->player.Draw();
+}
+
+std::unique_ptr<GameWorld> createLevel1() {
+  auto player = Player{{100.0f, 100.0f}};
+  std::vector<Circle> circles = {{{100.0f, 100.0f}, 100.0f}};
+  auto res = GameWorld{player, circles};
+  return std::make_unique<GameWorld>(std::move(res));
 }

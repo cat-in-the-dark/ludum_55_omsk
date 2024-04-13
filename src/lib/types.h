@@ -17,6 +17,11 @@ struct Triangle2D {
   Vector2 p3;
 };
 
+struct Circle {
+  Vector2 center;
+  float radius;
+};
+
 inline Vector3 operator+(const Vector3& v1, const Vector3& v2) {
   return {v1.x + v2.x, v1.y + v2.y, v1.z + v2.z};
 }
