@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "balance.h"
+#include "const.h"
 #include "entities/player.h"
 #include "lib/collisions.h"
 #include "lib/renderer.h"
@@ -25,6 +26,7 @@ void GameScene::Update() {
   const auto player_speed = 100.0f * dt;
 
   auto& player = game_world->player;
+
   if (IsKeyDown(KEY_DOWN)) {
     player.position.y += player_speed;
   } else if (IsKeyDown(KEY_UP)) {
@@ -34,6 +36,8 @@ void GameScene::Update() {
   } else if (IsKeyDown(KEY_LEFT)) {
     player.position.x -= player_speed;
   }
+
+  game_world->camera.target = player.position;
 
   for (auto& wave : wave_systems) {
     wave.Update(dt);
@@ -65,21 +69,26 @@ void GameScene::Update() {
   }
 
   player.Update(dt);
+  game_world->target.Update(dt);
 }
 
 void GameScene::Draw() {
   ClearBackground(BLACK);
 
+  BeginMode2D(game_world->camera);
   for (auto& ws : wave_systems) {
     ws.Draw();
   }
 
   game_world->player.Draw();
+  game_world->target.Draw();
+  EndMode2D();
 }
 
 std::unique_ptr<GameWorld> createLevel1() {
   auto player = Player{{100.0f, 100.0f}};
-  std::vector<CircleWall> circles = {{{500.0f, 300.0f}, 200.0f}};
-  auto res = GameWorld{player, circles};
+  std::vector<CircleWall> circles = {{{500.0f, 0.0f}, 200.0f}};
+  auto camera = Camera2D{{kWindowWidth / 2, kWindowHeight / 2}, player.position, 0.0f, 1.0f};
+  auto res = GameWorld{player, circles, {}, {450.0f, 250.0f}, camera};
   return std::make_unique<GameWorld>(std::move(res));
 }
