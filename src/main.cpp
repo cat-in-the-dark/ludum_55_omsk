@@ -4,6 +4,7 @@
 
 #include "CatmullRom.h"
 #include "const.h"
+#include "lib/renderer.h"
 #include "lib/scene.h"
 #include "lib/scene_manager.h"
 #include "lib/supa_scenes.h"
@@ -15,22 +16,9 @@
 #include <emscripten/emscripten.h>
 #endif
 
-void DrawLineWired(std::vector<Vector2>& model, Color color) {
-  rlBegin(RL_LINES);
-  rlColor4ub(color.r, color.g, color.b, color.a);
-  for (size_t i = 0; i < model.size() - 1; i++) {
-    rlVertex2f(model[i].x, model[i].y);
-    rlVertex2f(model[i + 1].x, model[i + 1].y);
-  }
-  auto& last = model[model.size() - 1];
-  rlVertex2f(last.x, last.y);
-  rlVertex2f(model[0].x, model[0].y);
-  rlEnd();
-}
-
 class GameScene : public Scene {
   Timer timer = {2};
-  std::vector<Vector2> points = {{5, 5}, {5, 64}, {32, 90}, {64, 64}, {64, 5}};
+  std::vector<Vector2> points = {{50, 50}, {55, 114}, {82, 140}, {114, 114}, {114, 50}};
   std::unique_ptr<Curve> curve = std::make_unique<CatmullRom>();
 
  public:
@@ -62,13 +50,13 @@ class GameScene : public Scene {
       DrawRectangle(40, 64, 100, 64, GREEN);
     }
 
-    DrawLineWired(points, BLUE);
+    DrawLines(points, 5.0f, BLUE);
     std::vector<Vector2> outPoints;
     for (int i = 0; i < curve->node_count(); ++i) {
       auto&& point = curve->node(i);
       outPoints.push_back({static_cast<float>(point.x), static_cast<float>(point.y)});
     }
-    DrawLineWired(outPoints, GREEN);
+    DrawLines(outPoints, 5.0f, GREEN);
   }
 };
 
