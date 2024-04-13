@@ -96,26 +96,27 @@ LineSystem SpawnTriangle(Triangle2D tri, float lifetime, float segment_lifetime,
   LineSystem ls(lifetime * 2);
 
   auto triDir = Tri60();
+  float offset = 4;
 
   for (int i = 0; i < kWaveLines; i++) {
     float t = float(i) / float(kWaveLines);
     auto e1 = Lerp2D(tri.p1, tri.p2, t);
     auto dir1 = Lerp2D(triDir.p1, triDir.p2, t);
-    ls.AddParticle(Line(e1, dir1, speed, lifetime, segment_lifetime));
+    ls.AddParticle(Line(e1 + dir1 * offset, dir1, speed, lifetime, segment_lifetime));
   }
 
   for (int i = 0; i < kWaveLines; i++) {
     float t = float(i) / float(kWaveLines);
     auto e2 = Lerp2D(tri.p2, tri.p3, t);
     auto dir2 = Lerp2D(triDir.p2, triDir.p3, t);
-    ls.AddParticle(Line(e2, dir2, speed, lifetime, segment_lifetime));
+    ls.AddParticle(Line(e2 + dir2 * offset, dir2, speed, lifetime, segment_lifetime));
   }
 
   for (int i = 0; i < kWaveLines; i++) {
     float t = float(i) / float(kWaveLines);
     auto e3 = Lerp2D(tri.p3, tri.p1, t);
     auto dir3 = Lerp2D(triDir.p3, triDir.p1, t);
-    ls.AddParticle(Line(e3, dir3, speed, lifetime, segment_lifetime));
+    ls.AddParticle(Line(e3 + dir3 * offset, dir3, speed, lifetime, segment_lifetime));
   }
 
   return ls;
