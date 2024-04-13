@@ -43,3 +43,18 @@ void TextureScene::Draw() {
   DrawTexture(tex, 0, 0, WHITE);
 }
 void TextureScene::Exit() {}
+
+TimerScene::TimerScene(SceneManager* sm, float seconds, std::string next) : sm{sm}, timer{seconds}, next{next} {}
+
+void TimerScene::Activate() {}
+
+void TimerScene::Update() {
+  timer.Update(GetFrameTime());
+  if (timer.IsPassed()) {
+    sm->Change(next);
+  }
+}
+
+void TimerScene::Draw() {}
+
+void TimerScene::Exit() {}

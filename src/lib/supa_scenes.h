@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "lib/tasks/timer.h"
 #include "scene.h"
 
 class SceneManager;
@@ -25,6 +26,19 @@ class ComboScene : public Scene {
     scenes.emplace_back(std::make_unique<TScene>(std::forward<TParam>(params)...));
     return this;
   }
+};
+
+class TimerScene : public Scene {
+  SceneManager* sm;
+  Timer timer;
+  std::string next;
+
+ public:
+  TimerScene(SceneManager* sm, float seconds, std::string next);
+  void Activate();
+  void Update();
+  void Draw();
+  void Exit();
 };
 
 class KeyAwaitScene : public Scene {

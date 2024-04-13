@@ -2,7 +2,6 @@
 
 #include <raylib.h>
 
-constexpr auto kTargetSize = 20.0f;
 constexpr auto kTargetColor = LIME;
 constexpr auto kRotationSpeed = PI / 4;
 

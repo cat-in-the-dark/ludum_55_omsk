@@ -77,7 +77,12 @@ int main() {
       ->With<TextureScene>(LoadTexture("assets/main.png"))
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
 
-  sm.Register<ComboScene>("game")->With<GameScene>()->With<KeyAwaitScene>(&sm, KEY_SPACE, "test_collisions");
+  sm.Register<ComboScene>("game")->With<GameScene>(&sm)->With<KeyAwaitScene>(&sm, KEY_SPACE, "test_collisions");
+
+  sm.Register<ComboScene>("next")
+      ->With<TextureScene>(LoadTexture("assets/main.png"))
+      ->With<TimerScene>(&sm, 3.0f, "game")
+      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
 
   sm.Register<ComboScene>("test_collisions")
       ->With<CollisionsTestScene>()
@@ -87,6 +92,11 @@ int main() {
 
   sm.Register<ComboScene>("gameover")
       ->With<TextureScene>(LoadTexture("assets/lose.png"))
+      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "logo");
+
+  sm.Register<ComboScene>("win")
+      ->With<TextureScene>(LoadTexture("assets/main.png"))
+      ->With<TimerScene>(&sm, 3.0f, "logo")
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "logo");
 
   // sm.Register<ComboScene>("gamewin")

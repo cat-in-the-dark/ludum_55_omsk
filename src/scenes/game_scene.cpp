@@ -10,8 +10,7 @@
 #include "lib/types.h"
 
 void GameScene::Activate() {
-  // TODO: generate other levels later
-  game_world = createLevel1();
+  game_world = level_creators[current_level]();
 }
 
 void GameScene::Exit() {}
@@ -81,6 +80,18 @@ void GameScene::MovePlayer(float dt) {
 
 void GameScene::CheckCollisions() {
   auto& pos = game_world->player.position;
+  auto& target = game_world->target;
+  auto targetRec = Rectangle{target.pos.x, target.pos.y, kTargetSize, kTargetSize};
+  if (CheckCollisionCircleRec(pos, kPlayerSize, targetRec)) {
+    current_level++;
+    if (current_level >= level_creators.size()) {
+      current_level = 0;
+      sm_->Change("win");
+    } else {
+      sm_->Change("next");
+    }
+  }
+
   for (auto& wall : game_world->circle_walls) {
     if (CheckCollisionCircles(pos, kPlayerSize, wall.pos, wall.radius)) {
       auto dir = Vector2Normalize(pos - wall.pos);

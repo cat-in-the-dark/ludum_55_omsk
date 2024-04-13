@@ -13,7 +13,7 @@
 #include "entities/player.h"
 #include "entities/target.h"
 #include "lib/scene.h"
-#include "lib/tasks/timer.h"
+#include "lib/scene_manager.h"
 #include "line.h"
 
 struct GameWorld {
@@ -37,8 +37,11 @@ std::unique_ptr<GameWorld> createLevel1();
 
 class GameScene : public Scene {
   std::unique_ptr<GameWorld> game_world;
+  size_t current_level = 0;
+  std::vector<std::function<std::unique_ptr<GameWorld>()>> level_creators = {createLevel1};
 
  public:
+  GameScene(SceneManager* sm) : sm_(sm) {}
   void Activate();
   void Exit();
   void Update();
@@ -47,4 +50,5 @@ class GameScene : public Scene {
  private:
   void MovePlayer(float dt);
   void CheckCollisions();
+  SceneManager* sm_;
 };
