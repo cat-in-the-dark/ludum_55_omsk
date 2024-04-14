@@ -55,3 +55,7 @@ bool CheckCollisionTriangleCircle(const Triangle2D& triangle, const Vector2& cen
 
   return false;
 }
+
+bool CircleInCircle(const Vector2& p1, float radius1, const Vector2& p2, float radius2) {
+  return Vector2Distance(p1, p2) < radius1 - radius2;
+}

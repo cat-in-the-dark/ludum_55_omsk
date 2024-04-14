@@ -9,6 +9,7 @@
 #include "CatmullRom.h"
 #include "balance.h"
 #include "const.h"
+#include "entities/anti_wall.h"
 #include "entities/black_hole.h"
 #include "entities/circle_wall.h"
 #include "entities/player.h"
@@ -19,11 +20,13 @@
 #include "line.h"
 
 struct GameWorld {
-  GameWorld(Player player, std::vector<CircleWall>&& circle_walls, std::vector<BlackHole>&& black_holes, Target target)
+  GameWorld(Player player, std::vector<CircleWall>&& circle_walls, std::vector<BlackHole>&& black_holes,
+            AntiCircleWall anti_wall, Target target)
       : player{player},
         circle_walls{std::move(circle_walls)},
         line_systems{},
         black_holes{std::move(black_holes)},
+        anti_wall{anti_wall},
         target{target},
         wave_cooldown{balance::kWaveSpawnCooldown} {
     camera = {{kCanvasWidth / 2, kCanvasHeight / 2}, player.position, 0.0f, 1.0f};
@@ -32,6 +35,7 @@ struct GameWorld {
   std::vector<CircleWall> circle_walls;
   std::list<LineSystem> line_systems;
   std::vector<BlackHole> black_holes;
+  AntiCircleWall anti_wall;
   Target target;
   Camera2D camera;
   Cooldown wave_cooldown;

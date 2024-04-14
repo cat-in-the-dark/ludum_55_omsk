@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "balance.h"
+#include "collision_system.h"
 #include "const.h"
 #include "entities/player.h"
 #include "lib/collisions.h"
@@ -64,7 +65,9 @@ void GameScene::Draw() {
 std::unique_ptr<GameWorld> createLevel1() {
   auto player = Player{{100.0f, 100.0f}};
   std::vector<CircleWall> circles = {{{500.0f, 0.0f}, 200.0f}};
-  auto res = GameWorld{player, std::move(circles), {{{30.0f, 320.0f}, 30.0f}}, {450.0f, 250.0f}};
+  std::vector<BlackHole> black_holes = {{{30.0f, 320.0f}, 30.0f}};
+  auto anti_wall = AntiCircleWall{{320, 180}, 250};
+  auto res = GameWorld{player, std::move(circles), std::move(black_holes), anti_wall, {450.0f, 250.0f}};
   return std::make_unique<GameWorld>(std::move(res));
 }
 
@@ -100,35 +103,17 @@ void GameScene::CheckCollisions() {
     }
   }
 
-  for (auto& wall : game_world->circle_walls) {
-    if (CheckCollisionCircles(pos, kPlayerSize, wall.pos, wall.radius)) {
-      auto dir = Vector2Normalize(pos - wall.pos);
-      pos = wall.pos + Vector2Scale(dir, kPlayerSize + wall.radius);
-    }
-  }
+  CheckCollisionsPlayerCircleWalls(game_world->circle_walls, game_world->player);
+
+  CheckCollisionsPlayerAntiWall(game_world->anti_wall, game_world->player);
 
   for (auto& ls : game_world->line_systems) {
     for (auto& particle : ls.particles) {
-      const auto& pos = particle.Pos();
+      CheckCollisionBlackHole(game_world->black_holes, particle);
 
-      for (auto& bh : game_world->black_holes) {
-        float dist = Vector2Distance(bh.pos, pos);
-        auto dir = Vector2Normalize(bh.pos - pos);
+      CheckCollisionCircleWalls(game_world->circle_walls, particle);
 
-        if (dist <= bh.radius / 2) {
-          particle.Stop();
-        } else {
-          auto pwr = 100.0 / (dist * dist);
-          particle.dir = particle.dir + dir * pwr;
-        }
-      }
-      for (auto& cr : game_world->circle_walls) {
-        if (CheckCollisionPointCircle(pos, cr.pos, cr.radius)) {
-          auto n = Vector2Normalize(cr.pos - pos);
-          auto d = Vector2Refract(particle.dir, n, 1);
-          particle.dir = d;
-        }
-      }
+      CheckCollisionAntiWall(game_world->anti_wall, particle);
     }
   }
 }

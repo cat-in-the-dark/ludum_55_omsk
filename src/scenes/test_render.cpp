@@ -2,6 +2,7 @@
 
 #include "../const.h"
 #include "balance.h"
+#include "collision_system.h"
 
 TestRenderScene::TestRenderScene()
     : tri({{0 + 300, 200 + 10.0f},
@@ -46,41 +47,14 @@ void TestRenderScene::Draw() {
   }
 }
 
-void CheckCollisionAntiWall(const AntiCircleWall& wall, Line& line) {
-  const auto& pos = line.Pos();
-
-  if (!CheckCollisionPointCircle(pos, wall.pos, wall.radius)) {
-    auto n = Vector2Normalize(pos - wall.pos);
-    auto d = Vector2Refract(line.dir, n, 1);
-    line.dir = d;
-  }
-}
-
 void TestRenderScene::CheckCollisions() {
   for (auto& ls : line_systems) {
     for (auto& particle : ls.particles) {
-      const auto& pos = particle.Pos();
-
       CheckCollisionAntiWall(anti_wall, particle);
 
-      for (auto& bh : black_holes) {
-        float dist = Vector2Distance(bh.pos, pos);
-        auto dir = Vector2Normalize(bh.pos - pos);
+      CheckCollisionBlackHole(black_holes, particle);
 
-        if (dist <= bh.radius / 2) {
-          particle.Stop();
-        } else {
-          auto pwr = 100.0 / (dist * dist);
-          particle.dir = particle.dir + dir * pwr;
-        }
-      }
-      for (auto& cr : circle_wall) {
-        if (CheckCollisionPointCircle(pos, cr.pos, cr.radius)) {
-          auto n = Vector2Normalize(cr.pos - pos);
-          auto d = Vector2Refract(particle.dir, n, 1);
-          particle.dir = d;
-        }
-      }
+      CheckCollisionCircleWalls(circle_wall, particle);
     }
   }
 }
