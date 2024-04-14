@@ -27,16 +27,25 @@ void GameScene::Update() {
     game_world->wave_cooldown.Update(dt);
   }
 
+  auto& line_systems = game_world->line_systems;
+
   if (game_world->wave_cooldown.Invoke()) {
-    game_world->line_systems.emplace_back(SpawnTriangle(game_world->player.GetPlayerShape(), balance::kWaveLifetime,
-                                                        balance::kWaveSegmentLifetime, balance::kWaveSpeed));
+    line_systems.emplace_back(SpawnTriangle(game_world->player.GetPlayerShape(), balance::kWaveLifetime,
+                                            balance::kWaveSegmentLifetime, balance::kWaveSpeed));
   }
 
   game_world->camera.target = player.position;
 
-  auto& line_systems = game_world->line_systems;
   for (auto& line : line_systems) {
     line.Update(dt);
+  }
+
+  for (auto& enemy : game_world->enemies) {
+    enemy.Update(player, dt);
+    if (enemy.cooldown.Invoke()) {
+      line_systems.emplace_back(SpawnCircle(enemy.shape, balance::kWaveLifetime, balance::kWaveSegmentLifetime,
+                                            balance::kWaveSpeed, balance::kEnemyLinesCount));
+    }
   }
 
   line_systems.erase(
@@ -57,6 +66,16 @@ void GameScene::Draw() {
     ls.Draw();
   }
 
+  for (auto& cw : game_world->circle_walls) {
+    cw.Draw();
+  }
+
+  for (auto& enemy : game_world->enemies) {
+    enemy.Draw();
+  }
+
+  game_world->anti_wall.Draw();
+
   game_world->player.Draw();
   game_world->target.Draw();
   EndMode2D();
@@ -66,8 +85,10 @@ std::unique_ptr<GameWorld> createLevel1() {
   auto player = Player{{100.0f, 100.0f}};
   std::vector<CircleWall> circles = {{{500.0f, 0.0f}, 200.0f}};
   std::vector<BlackHole> black_holes = {{{30.0f, 320.0f}, 30.0f}};
+  std::vector<Enemy> enemies = {{{320, 300}, 25}};
   auto anti_wall = AntiCircleWall{{320, 180}, 250};
-  auto res = GameWorld{player, std::move(circles), std::move(black_holes), anti_wall, {450.0f, 250.0f}};
+  auto res =
+      GameWorld{player, std::move(circles), std::move(black_holes), std::move(enemies), anti_wall, {450.0f, 250.0f}};
   return std::make_unique<GameWorld>(std::move(res));
 }
 
@@ -107,8 +128,14 @@ void GameScene::CheckCollisions() {
 
   CheckCollisionsPlayerAntiWall(game_world->anti_wall, game_world->player);
 
+  for (auto& enemy : game_world->enemies) {
+    CheckCollisionEnemyCircleWalls(game_world->circle_walls, enemy);
+  }
+
   for (auto& ls : game_world->line_systems) {
     for (auto& particle : ls.particles) {
+      CheckCollisionEnemies(game_world->enemies, particle);
+
       CheckCollisionBlackHole(game_world->black_holes, particle);
 
       CheckCollisionCircleWalls(game_world->circle_walls, particle);

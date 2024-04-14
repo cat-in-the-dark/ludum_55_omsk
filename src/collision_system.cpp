@@ -1,5 +1,6 @@
 #include "collision_system.h"
 
+#include "const.h"
 #include "lib/collisions.h"
 
 void CheckCollisionAntiWall(const AntiCircleWall& wall, Line& line) {
@@ -34,6 +35,30 @@ void CheckCollisionCircleWalls(const std::vector<CircleWall>& circle_walls, Line
   for (auto& cr : circle_walls) {
     if (CheckCollisionPointCircle(pos, cr.pos, cr.radius)) {
       auto n = Vector2Normalize(cr.pos - pos);
+      auto d = Vector2Refract(line.dir, n, 1);
+      line.dir = d;
+    }
+  }
+}
+
+void CheckCollisionEnemyCircleWalls(const std::vector<CircleWall>& circle_walls, Enemy& enemy) {
+  auto& pos = enemy.shape.center;
+  for (auto& wall : circle_walls) {
+    if (CheckCollisionCircles(pos, kPlayerSize, wall.pos, wall.radius)) {
+      auto dir = Vector2Normalize(pos - wall.pos);
+      pos = wall.pos + Vector2Scale(dir, kPlayerSize + wall.radius);
+    }
+  }
+}
+
+void CheckCollisionEnemies(std::vector<Enemy>& enemies, Line& line) {
+  const auto& pos = line.Pos();
+
+  for (auto& enemy : enemies) {
+    if (CheckCollisionPointCircle(pos, enemy.shape.center, enemy.shape.radius)) {
+      enemy.activated = true;
+      line.color = kEnemyColor;
+      auto n = Vector2Normalize(enemy.shape.center - pos);
       auto d = Vector2Refract(line.dir, n, 1);
       line.dir = d;
     }

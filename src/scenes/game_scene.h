@@ -12,20 +12,23 @@
 #include "entities/anti_wall.h"
 #include "entities/black_hole.h"
 #include "entities/circle_wall.h"
+#include "entities/enemy.h"
 #include "entities/player.h"
 #include "entities/target.h"
 #include "lib/scene.h"
 #include "lib/scene_manager.h"
 #include "lib/tasks/cooldown.h"
+#include "lib/types.h"
 #include "line.h"
 
 struct GameWorld {
   GameWorld(Player player, std::vector<CircleWall>&& circle_walls, std::vector<BlackHole>&& black_holes,
-            AntiCircleWall anti_wall, Target target)
+            std::vector<Enemy>&& enemies, AntiCircleWall anti_wall, Target target)
       : player{player},
         circle_walls{std::move(circle_walls)},
         line_systems{},
         black_holes{std::move(black_holes)},
+        enemies{std::move(enemies)},
         anti_wall{anti_wall},
         target{target},
         wave_cooldown{balance::kWaveSpawnCooldown} {
@@ -35,6 +38,7 @@ struct GameWorld {
   std::vector<CircleWall> circle_walls;
   std::list<LineSystem> line_systems;
   std::vector<BlackHole> black_holes;
+  std::vector<Enemy> enemies;
   AntiCircleWall anti_wall;
   Target target;
   Camera2D camera;
