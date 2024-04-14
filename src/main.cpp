@@ -88,16 +88,14 @@ int main() {
 
   sm.Register<ComboScene>("logo")
       ->With<TextureScene>(LoadTexture("assets/logo.png"), kCanvasWidth, kCanvasHeight)
+      ->With<TimerScene>(&sm, 3.0f, "title")
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
 
   sm.Register<ComboScene>("title")
       ->With<TextureScene>(LoadTexture("assets/main.png"), kCanvasWidth, kCanvasHeight)
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
 
-  sm.Register<ComboScene>("game")
-      ->With<GameScene>(&sm)
-      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "next")
-      ->With<KeyAwaitScene>(&sm, KEY_ESCAPE, "logo");
+  sm.Register<ComboScene>("game")->With<GameScene>(&sm)->With<KeyAwaitScene>(&sm, KEY_ESCAPE, "logo");
 
   sm.Register<ComboScene>("next")
       ->With<TextureScene>(LoadTexture("assets/next.png"), kCanvasWidth, kCanvasHeight)
@@ -106,12 +104,11 @@ int main() {
 
   sm.Register<ComboScene>("gameover")
       ->With<TextureScene>(LoadTexture("assets/lose.png"), kCanvasWidth, kCanvasHeight)
-      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "logo");
+      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
 
   sm.Register<ComboScene>("gamewin")
       ->With<TextureScene>(LoadTexture("assets/win.png"), kCanvasWidth, kCanvasHeight)
-      ->With<TimerScene>(&sm, 3.0f, "logo")
-      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "logo");
+      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
 
   sm.Change("title");
 
