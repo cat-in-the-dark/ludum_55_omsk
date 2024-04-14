@@ -18,48 +18,35 @@ void GameScene::Exit() {}
 
 void GameScene::Update() {
   auto dt = GetFrameTime();
-
-  const auto epsilon = 0.0001f;
-  auto& player = game_world->player;
-  auto speed = MovePlayer();
-  player.position = player.position + speed;
-
   auto& line_systems = game_world->line_systems;
-
-  game_world->wave_cooldown.Update(dt);
-  if (Vector2LengthSqr(speed) > epsilon) {
-    if (game_world->wave_cooldown.Invoke()) {
-      line_systems.emplace_back(SpawnTriangle(game_world->player.GetPlayerShape(), balance::kWaveLifetime,
-                                              balance::kWaveSegmentLifetime, balance::kWaveSpeed));
-    }
-  }
-
-  game_world->camera.target = player.position;
 
   for (auto& line : line_systems) {
     line.Update(dt);
-  }
-
-  for (auto& enemy : game_world->enemies) {
-    if (!enemy.alive) {
-      continue;
-    }
-
-    enemy.Update(player, dt);
-    if (enemy.cooldown.Invoke()) {
-      line_systems.emplace_back(SpawnCircle(enemy.shape, balance::kWaveLifetime, balance::kWaveSegmentLifetime,
-                                            balance::kWaveSpeed, balance::kEnemyLinesCount));
-    }
   }
 
   line_systems.erase(
       std::remove_if(line_systems.begin(), line_systems.end(), [](const auto& ls) { return !ls.Alive(); }),
       line_systems.end());
 
-  CheckCollisions();
-
-  player.Update(dt);
   game_world->target.Update(dt);
+
+  switch (game_world->world_state) {
+    case WorldState::IN_GAME: {
+      UpdateGame(dt);
+      break;
+    }
+    case WorldState::DYING: {
+      UpdateDeathAnimation(dt);
+      break;
+    }
+    case WorldState::WINNING: {
+      UpdateWinAnimation(dt);
+      break;
+    }
+
+    default:
+      break;
+  }
 }
 
 void GameScene::Draw() {
@@ -121,13 +108,7 @@ void GameScene::CheckCollisions() {
   auto& target = game_world->target;
   auto targetRec = Rectangle{target.pos.x, target.pos.y, kTargetSize, kTargetSize};
   if (CheckCollisionCircleRec(pos, kPlayerSize, targetRec)) {
-    current_level++;
-    if (current_level >= level_creators.size()) {
-      current_level = 0;
-      sm_->Change("gamewin");
-    } else {
-      sm_->Change("next");
-    }
+    game_world->world_state = WorldState::WINNING;
   }
 
   CheckCollisionsPlayerCircleWalls(game_world->circle_walls, game_world->player);
@@ -138,7 +119,7 @@ void GameScene::CheckCollisions() {
 
   for (auto& black_hole : game_world->black_holes) {
     if (CheckCollisionCircles(pos, kPlayerSize, black_hole.pos, black_hole.radius)) {
-      sm_->Change("gameover");
+      game_world->world_state = WorldState::DYING;
     }
   }
 
@@ -148,7 +129,7 @@ void GameScene::CheckCollisions() {
     }
 
     if (CheckCollisionCircles(pos, kPlayerSize, enemy.shape.center, enemy.shape.radius)) {
-      sm_->Change("gameover");
+      game_world->world_state = WorldState::DYING;
     }
 
     CheckCollisionEnemyCircleWalls(game_world->circle_walls, enemy);
@@ -164,5 +145,54 @@ void GameScene::CheckCollisions() {
 
       CheckCollisionAntiWall(game_world->anti_wall, particle);
     }
+  }
+}
+
+void GameScene::UpdateGame(float dt) {
+  const auto epsilon = 0.0001f;
+  auto& player = game_world->player;
+  auto speed = MovePlayer();
+  player.position = player.position + speed;
+
+  auto& line_systems = game_world->line_systems;
+
+  game_world->wave_cooldown.Update(dt);
+  if (Vector2LengthSqr(speed) > epsilon) {
+    if (game_world->wave_cooldown.Invoke()) {
+      line_systems.emplace_back(SpawnTriangle(game_world->player.GetPlayerShape(), balance::kWaveLifetime,
+                                              balance::kWaveSegmentLifetime, balance::kWaveSpeed));
+    }
+  }
+
+  for (auto& enemy : game_world->enemies) {
+    if (!enemy.alive) {
+      continue;
+    }
+
+    enemy.Update(player, dt);
+    if (enemy.cooldown.Invoke()) {
+      line_systems.emplace_back(SpawnCircle(enemy.shape, balance::kWaveLifetime, balance::kWaveSegmentLifetime,
+                                            balance::kWaveSpeed, balance::kEnemyLinesCount));
+    }
+  }
+
+  game_world->camera.target = player.position;
+
+  CheckCollisions();
+
+  player.Update(dt);
+}
+
+void GameScene::UpdateDeathAnimation(float dt) {
+  sm_->Change("gameover");
+}
+
+void GameScene::UpdateWinAnimation(float dt) {
+  current_level++;
+  if (current_level >= level_creators.size()) {
+    current_level = 0;
+    sm_->Change("gamewin");
+  } else {
+    sm_->Change("next");
   }
 }

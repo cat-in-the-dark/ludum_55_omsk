@@ -19,3 +19,6 @@ constexpr auto kMaxSegmentLen = 5.0f;
 constexpr auto kPlayerColor = DARKGREEN;
 constexpr auto kCubeColor = GOLD;
 constexpr auto kEnemyColor = VIOLET;
+
+constexpr auto kDeatTimeout = 2.0f;
+constexpr auto kWinTimeout = 2.0f;

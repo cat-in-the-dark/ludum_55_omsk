@@ -18,8 +18,11 @@
 #include "lib/scene.h"
 #include "lib/scene_manager.h"
 #include "lib/tasks/cooldown.h"
+#include "lib/tasks/timer.h"
 #include "lib/types.h"
 #include "line.h"
+
+enum class WorldState { IN_GAME, DYING, WINNING };
 
 struct GameWorld {
   GameWorld(Player player, std::vector<CircleWall>&& circle_walls, std::vector<BlackHole>&& black_holes,
@@ -31,7 +34,10 @@ struct GameWorld {
         enemies{std::move(enemies)},
         anti_wall{anti_wall},
         target{target},
-        wave_cooldown{balance::kWaveSpawnCooldown, balance::kWaveSpawnCooldown * 0.99f} {
+        wave_cooldown{balance::kWaveSpawnCooldown, balance::kWaveSpawnCooldown * 0.99f},
+        world_state{WorldState::IN_GAME},
+        death_timer{kDeatTimeout},
+        win_timer{kWinTimeout} {
     camera = {{kCanvasWidth / 2, kCanvasHeight / 2}, player.position, 0.0f, 1.0f};
   }
   Player player;
@@ -43,6 +49,9 @@ struct GameWorld {
   Target target;
   Camera2D camera;
   Cooldown wave_cooldown;
+  WorldState world_state;
+  Timer death_timer;
+  Timer win_timer;
 };
 
 std::unique_ptr<GameWorld> createLevel1();
@@ -62,5 +71,8 @@ class GameScene : public Scene {
  private:
   Vector2 MovePlayer();
   void CheckCollisions();
+  void UpdateGame(float dt);
+  void UpdateDeathAnimation(float dt);
+  void UpdateWinAnimation(float dt);
   SceneManager* sm_;
 };
