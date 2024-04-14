@@ -124,7 +124,7 @@ void GameScene::CheckCollisions() {
     current_level++;
     if (current_level >= level_creators.size()) {
       current_level = 0;
-      sm_->Change("win");
+      sm_->Change("gamewin");
     } else {
       sm_->Change("next");
     }
