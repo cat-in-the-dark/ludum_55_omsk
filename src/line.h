@@ -12,11 +12,11 @@ class Segment {
  public:
   Vector2 p1;
   Vector2 p2;
+  Color color;
   float lifetime;
   float elapsed = 0;
-  Color color = RED;
 
-  Segment(Vector2 p1, Vector2 p2, float lifetime, float elapsed = 0);
+  Segment(Vector2 p1, Vector2 p2, Color color, float lifetime, float elapsed = 0);
   bool Update(float dt);  // если сегмент закончился то тут false
   void Draw();
   float Length() const;
@@ -29,12 +29,13 @@ class Line {
 
  public:
   Vector2 dir;
+  Color color;  // next segment color
   float speed;
   float elapsed = 0;
   float lifetime;
   float segment_lifetime;
 
-  Line(Vector2 start, Vector2 dir, float speed, float lifetime, float segment_lifetime);
+  Line(Vector2 start, Vector2 dir, Color color, float speed, float lifetime, float segment_lifetime);
   bool Update(float dt);  // если линия закончилась, то тут false
   void Draw();
   bool StoppedGenerating() const {

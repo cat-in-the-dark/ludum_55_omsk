@@ -28,7 +28,7 @@ void TestRenderScene::Update() {
 }
 void TestRenderScene::Draw() {
   ClearBackground(BLACK);
-  DrawTriangle(tri.p1, tri.p2, tri.p3, RED);
+  DrawTriangle(tri.p1, tri.p2, tri.p3, kPlayerColor);
 
   anti_wall.Draw();
 
