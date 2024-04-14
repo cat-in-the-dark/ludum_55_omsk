@@ -41,6 +41,10 @@ void GameScene::Update() {
   }
 
   for (auto& enemy : game_world->enemies) {
+    if (!enemy.alive) {
+      continue;
+    }
+
     enemy.Update(player, dt);
     if (enemy.cooldown.Invoke()) {
       line_systems.emplace_back(SpawnCircle(enemy.shape, balance::kWaveLifetime, balance::kWaveSegmentLifetime,
@@ -71,7 +75,9 @@ void GameScene::Draw() {
   }
 
   for (auto& enemy : game_world->enemies) {
-    enemy.Draw();
+    if (enemy.alive) {
+      enemy.Draw();
+    }
   }
 
   game_world->anti_wall.Draw();
@@ -84,7 +90,7 @@ void GameScene::Draw() {
 std::unique_ptr<GameWorld> createLevel1() {
   auto player = Player{{100.0f, 100.0f}};
   std::vector<CircleWall> circles = {{{250.0f, 100.0f}, 50.0f}};
-  std::vector<BlackHole> black_holes = {{{30.0f, 320.0f}, 30.0f}};
+  std::vector<BlackHole> black_holes = {{{320.0f, 180.0f}, 30.0f}};
   std::vector<Enemy> enemies = {{{320, 300}, 25}};
   auto anti_wall = AntiCircleWall{{320, 180}, 250};
   auto res =
@@ -128,7 +134,23 @@ void GameScene::CheckCollisions() {
 
   CheckCollisionsPlayerAntiWall(game_world->anti_wall, game_world->player);
 
+  CheckCollisionEnemiesBleckHoles(game_world->black_holes, game_world->enemies);
+
+  for (auto& black_hole : game_world->black_holes) {
+    if (CheckCollisionCircles(pos, kPlayerSize, black_hole.pos, black_hole.radius)) {
+      sm_->Change("gameover");
+    }
+  }
+
   for (auto& enemy : game_world->enemies) {
+    if (!enemy.alive) {
+      continue;
+    }
+
+    if (CheckCollisionCircles(pos, kPlayerSize, enemy.shape.center, enemy.shape.radius)) {
+      sm_->Change("gameover");
+    }
+
     CheckCollisionEnemyCircleWalls(game_world->circle_walls, enemy);
   }
 

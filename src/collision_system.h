@@ -24,3 +24,5 @@ void CheckCollisionEnemies(std::vector<Enemy>& enemies, Line& line);
 void CheckCollisionsPlayerCircleWalls(const std::vector<CircleWall>& circle_walls, Player& player);
 
 void CheckCollisionsPlayerAntiWall(const AntiCircleWall& anti_wall, Player& player);
+
+void CheckCollisionEnemiesBleckHoles(const std::vector<BlackHole>& blackHoles, std::vector<Enemy>& enemies);

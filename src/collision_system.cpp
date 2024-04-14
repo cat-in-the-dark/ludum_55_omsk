@@ -42,6 +42,10 @@ void CheckCollisionCircleWalls(const std::vector<CircleWall>& circle_walls, Line
 }
 
 void CheckCollisionEnemyCircleWalls(const std::vector<CircleWall>& circle_walls, Enemy& enemy) {
+  if (!enemy.alive) {
+    return;
+  }
+
   auto& pos = enemy.shape.center;
   for (auto& wall : circle_walls) {
     if (CheckCollisionCircles(pos, enemy.shape.radius, wall.pos, wall.radius)) {
@@ -55,6 +59,9 @@ void CheckCollisionEnemies(std::vector<Enemy>& enemies, Line& line) {
   const auto& pos = line.Pos();
 
   for (auto& enemy : enemies) {
+    if (!enemy.alive) {
+      continue;
+    }
     if (CheckCollisionPointCircle(pos, enemy.shape.center, enemy.shape.radius)) {
       enemy.activated = true;
       line.color = kEnemyColor;
@@ -80,5 +87,15 @@ void CheckCollisionsPlayerAntiWall(const AntiCircleWall& anti_wall, Player& play
   if (!CircleInCircle(anti_wall.pos, anti_wall.radius, pos, kPlayerSize)) {
     auto dir = Vector2Normalize(pos - anti_wall.pos);
     pos = anti_wall.pos + Vector2Scale(dir, anti_wall.radius - kPlayerSize);
+  }
+}
+
+void CheckCollisionEnemiesBleckHoles(const std::vector<BlackHole>& black_holes, std::vector<Enemy>& enemies) {
+  for (auto& black_hole : black_holes) {
+    for (auto& enemy : enemies) {
+      if (CheckCollisionCircles(black_hole.pos, black_hole.radius, enemy.shape.center, enemy.shape.radius)) {
+        enemy.alive = false;
+      }
+    }
   }
 }

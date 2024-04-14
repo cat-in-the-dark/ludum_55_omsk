@@ -10,6 +10,9 @@ struct Enemy {
   void Draw();
   void Update(const Player& player, float dt);
   Circle shape;
+
+  // TODO: Learn how to delete elements from vectors!
+  bool alive = true;
   bool activated = false;
   Cooldown cooldown = {balance::kEnemyWaveSpawnCooldown};
 };
