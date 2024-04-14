@@ -65,16 +65,14 @@ std::unique_ptr<GameWorld> createLevel1() {
 void GameScene::MovePlayer(float dt) {
   auto& player = game_world->player;
 
-  const auto player_speed = 100.0f * dt;
-
   if (IsKeyDown(KEY_DOWN)) {
-    player.position.y += player_speed;
+    player.position.y += balance::kPlayerSpeed;
   } else if (IsKeyDown(KEY_UP)) {
-    player.position.y -= player_speed;
+    player.position.y -= balance::kPlayerSpeed;
   } else if (IsKeyDown(KEY_RIGHT)) {
-    player.position.x += player_speed;
+    player.position.x += balance::kPlayerSpeed;
   } else if (IsKeyDown(KEY_LEFT)) {
-    player.position.x -= player_speed;
+    player.position.x -= balance::kPlayerSpeed;
   }
 }
 
