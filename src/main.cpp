@@ -44,7 +44,14 @@ static Rectangle get_pixel_perfect_layout(int cw, int ch) {
   };
 }
 
+void toggleDebugRender() {
+  if (IsKeyPressed(KEY_F)) {
+    kDebugRender = !kDebugRender;
+  }
+}
+
 void update(void* arg) {
+  toggleDebugRender();
   auto sm = reinterpret_cast<SceneManager*>(arg);
   // TODO: use pattern https://gameprogrammingpatterns.com/game-loop.html
   sm->Update();

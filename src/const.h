@@ -11,7 +11,7 @@ constexpr auto kWindowHeight = kCanvasHeight * 2;
 
 constexpr auto kLineThickness = 3.0f;
 
-constexpr auto kDebugRender = true;
+extern bool kDebugRender;
 
 constexpr auto kWaveLines = 16;
 constexpr auto kMaxSegmentLen = 5.0f;

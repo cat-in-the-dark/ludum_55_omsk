@@ -17,6 +17,11 @@ void GameScene::Activate() {
 void GameScene::Exit() {}
 
 void GameScene::Update() {
+  if (IsKeyPressed(KEY_TAB)) {
+    TraceLog(LOG_INFO, "pos [%f, %f]", game_world->player.position.x, game_world->player.position.y);
+    game_world->circle_walls.emplace_back(game_world->player.position, 32);
+  }
+
   auto dt = GetFrameTime();
   auto& line_systems = game_world->line_systems;
 
@@ -74,7 +79,7 @@ void GameScene::Draw() {
   EndMode2D();
 }
 
-std::unique_ptr<GameWorld> createLevel1() {
+std::unique_ptr<GameWorld> createLevel0() {
   auto player = Player{{100.0f, 100.0f}};
   std::vector<CircleWall> circles = {{{250.0f, 100.0f}, 50.0f}};
   std::vector<BlackHole> black_holes = {{{320.0f, 180.0f}, 30.0f}};
@@ -83,6 +88,34 @@ std::unique_ptr<GameWorld> createLevel1() {
   auto res =
       GameWorld{player, std::move(circles), std::move(black_holes), std::move(enemies), anti_wall, {450.0f, 250.0f}};
   return std::make_unique<GameWorld>(std::move(res));
+}
+
+std::unique_ptr<GameWorld> createLevel2() {
+  auto player = Player{{0, 0}};
+  std::vector<CircleWall> circles = {
+      {{-64.0f, -64.0f}, 48.0f}, {{140.0f, 140.0f}, 32.0f}, {{180.0f, 110.0f}, 32.0f},
+      {{225.0f, 65.0f}, 32.0f},  {{164.0f, 256.0f}, 32.0f}, {{234.0f, -20.0f}, 32.0f},
+      {{213.0f, 218.0f}, 32.0f}, {{0.0f, 135.0f}, 32.0f},   {{72.0f, 198.0f}, 32.0f},
+  };
+  AntiCircleWall anti_wall({0, 0}, 320);
+  Target target(250, 120);
+  auto res = GameWorld{player, std::move(circles), {}, {}, anti_wall, target};
+  return std::make_unique<GameWorld>(std::move(res));
+}
+std::unique_ptr<GameWorld> createLevel1() {
+  auto player = Player{{0, 0}};
+  AntiCircleWall anti_wall({0, 0}, 320);
+  Target target(280, 0);
+  return std::make_unique<GameWorld>(GameWorld{player, {}, {}, {}, anti_wall, target});
+}
+std::unique_ptr<GameWorld> createLevel3() {
+  auto player = Player{{0, 0}};
+  AntiCircleWall anti_wall({0, 0}, 400);
+  std::vector<CircleWall> circles = {{{320.0f, 0.0f}, 180.0f}, {{-320.0f, 0.0f}, 180.0f}, {{0.0f, -320.0f}, 180.0f},
+                                     {{0.0f, 320.0f}, 180.0f}, {{-100, 100}, 32},         {{-100, -100}, 32},
+                                     {{100, -100}, 32},        {{100, 100}, 32}};
+  Target target(200, -300);
+  return std::make_unique<GameWorld>(GameWorld{player, std::move(circles), {}, {}, anti_wall, target});
 }
 
 Vector2 GameScene::MovePlayer() {

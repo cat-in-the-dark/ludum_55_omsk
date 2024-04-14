@@ -55,11 +55,14 @@ struct GameWorld {
 };
 
 std::unique_ptr<GameWorld> createLevel1();
+std::unique_ptr<GameWorld> createLevel2();
+std::unique_ptr<GameWorld> createLevel3();
+// std::unique_ptr<GameWorld> createLevel4();
 
 class GameScene : public Scene {
   std::unique_ptr<GameWorld> game_world;
   size_t current_level = 0;
-  std::vector<std::function<std::unique_ptr<GameWorld>()>> level_creators = {createLevel1};
+  std::vector<std::function<std::unique_ptr<GameWorld>()>> level_creators = {createLevel1, createLevel2, createLevel3};
 
  public:
   GameScene(SceneManager* sm) : sm_(sm) {}
