@@ -61,7 +61,6 @@ std::unique_ptr<GameWorld> createLevel3();
 
 class GameScene : public Scene {
   std::unique_ptr<GameWorld> game_world;
-  size_t current_level = 0;
   std::vector<std::function<std::unique_ptr<GameWorld>()>> level_creators = {createLevel1, createLevel2, createLevel3};
 
  public:

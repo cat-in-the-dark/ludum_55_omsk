@@ -22,3 +22,5 @@ constexpr auto kEnemyColor = VIOLET;
 
 constexpr auto kDeatTimeout = 2.0f;
 constexpr auto kWinTimeout = 2.0f;
+
+extern unsigned int current_level;

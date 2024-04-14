@@ -94,18 +94,15 @@ int main() {
       ->With<TextureScene>(LoadTexture("assets/main.png"), kCanvasWidth, kCanvasHeight)
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
 
-  sm.Register<ComboScene>("game")->With<GameScene>(&sm)->With<KeyAwaitScene>(&sm, KEY_SPACE, "test_collisions");
+  sm.Register<ComboScene>("game")
+      ->With<GameScene>(&sm)
+      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "next")
+      ->With<KeyAwaitScene>(&sm, KEY_ESCAPE, "logo");
 
   sm.Register<ComboScene>("next")
       ->With<TextureScene>(LoadTexture("assets/main.png"), kCanvasWidth, kCanvasHeight)
       ->With<TimerScene>(&sm, 3.0f, "game")
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
-
-  sm.Register<ComboScene>("test_collisions")
-      ->With<CollisionsTestScene>()
-      ->With<KeyAwaitScene>(&sm, KEY_SPACE, "stress_test");
-
-  sm.Register<ComboScene>("stress_test")->With<StressTestScene>()->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
 
   sm.Register<ComboScene>("gameover")
       ->With<TextureScene>(LoadTexture("assets/lose.png"), kCanvasWidth, kCanvasHeight)
@@ -115,8 +112,6 @@ int main() {
       ->With<TextureScene>(LoadTexture("assets/winsc_2.png"), kCanvasWidth, kCanvasHeight)
       ->With<TimerScene>(&sm, 3.0f, "logo")
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "logo");
-
-  sm.Register<ComboScene>("test_render")->With<TestRenderScene>()->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
 
   sm.Change("title");
 
