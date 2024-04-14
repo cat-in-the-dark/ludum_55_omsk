@@ -83,7 +83,7 @@ void GameScene::Draw() {
 
 std::unique_ptr<GameWorld> createLevel1() {
   auto player = Player{{100.0f, 100.0f}};
-  std::vector<CircleWall> circles = {{{500.0f, 0.0f}, 200.0f}};
+  std::vector<CircleWall> circles = {{{250.0f, 100.0f}, 50.0f}};
   std::vector<BlackHole> black_holes = {{{30.0f, 320.0f}, 30.0f}};
   std::vector<Enemy> enemies = {{{320, 300}, 25}};
   auto anti_wall = AntiCircleWall{{320, 180}, 250};

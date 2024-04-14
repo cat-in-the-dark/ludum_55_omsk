@@ -44,9 +44,9 @@ void CheckCollisionCircleWalls(const std::vector<CircleWall>& circle_walls, Line
 void CheckCollisionEnemyCircleWalls(const std::vector<CircleWall>& circle_walls, Enemy& enemy) {
   auto& pos = enemy.shape.center;
   for (auto& wall : circle_walls) {
-    if (CheckCollisionCircles(pos, kPlayerSize, wall.pos, wall.radius)) {
+    if (CheckCollisionCircles(pos, enemy.shape.radius, wall.pos, wall.radius)) {
       auto dir = Vector2Normalize(pos - wall.pos);
-      pos = wall.pos + Vector2Scale(dir, kPlayerSize + wall.radius);
+      pos = wall.pos + Vector2Scale(dir, enemy.shape.radius + wall.radius);
     }
   }
 }
