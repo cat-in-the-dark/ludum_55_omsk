@@ -22,7 +22,7 @@
 #include "lib/types.h"
 #include "line.h"
 
-enum class WorldState { IN_GAME, DYING, WINNING };
+enum class WorldState { IN_GAME, DEATH_FROM_BLACK_HOLE, DEATH_FROM_ENEMY, WINNING };
 
 struct GameWorld {
   GameWorld(Player player, std::vector<CircleWall>&& circle_walls, std::vector<BlackHole>&& black_holes,
@@ -36,7 +36,9 @@ struct GameWorld {
         target{target},
         wave_cooldown{balance::kWaveSpawnCooldown, balance::kWaveSpawnCooldown * 0.99f},
         world_state{WorldState::IN_GAME},
-        death_timer{kDeatTimeout},
+        hit_pos{0, 0},
+        player_hit_pos{0, 0},
+        death_timer{kDeathTimeout},
         win_timer{kWinTimeout} {
     camera = {{kCanvasWidth / 2, kCanvasHeight / 2}, player.position, 0.0f, 1.0f};
   }
@@ -50,6 +52,8 @@ struct GameWorld {
   Camera2D camera;
   Cooldown wave_cooldown;
   WorldState world_state;
+  Vector2 hit_pos;
+  Vector2 player_hit_pos;
   Timer death_timer;
   Timer win_timer;
 };
@@ -78,7 +82,8 @@ class GameScene : public Scene {
   Vector2 MovePlayer();
   void CheckCollisions();
   void UpdateGame(float dt);
-  void UpdateDeathAnimation(float dt);
+  void UpdateBlackHoleDeathAnimation(float dt);
+  void UpdateEnemyDeathAnimation(float dt);
   void UpdateWinAnimation(float dt);
   SceneManager* sm_;
 };

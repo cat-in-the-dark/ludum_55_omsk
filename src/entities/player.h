@@ -10,18 +10,17 @@
 constexpr auto kPlayerSize = 15.0f;
 
 class Player : public Entity {
-  Color color_{GREEN};
-  Triangle2D shape_;
-
  public:
-  Player(Vector2&& position) : shape_{createPlayerShape(kPlayerSize)}, position(std::move(position)) {}
+  Player(Vector2&& position) : shape{createPlayerShape(kPlayerSize)}, position(std::move(position)) {}
   void Update(float dt);
   void Draw();
 
+  Triangle2D shape;
   Vector2 position;
+  Color color{GREEN};
 
   Triangle2D GetPlayerShape() {
-    return {shape_.p1 + position, shape_.p2 + position, shape_.p3 + position};
+    return {shape.p1 + position, shape.p2 + position, shape.p3 + position};
   }
 
  private:

@@ -41,8 +41,12 @@ void GameScene::Update() {
       UpdateGame(dt);
       break;
     }
-    case WorldState::DYING: {
-      UpdateDeathAnimation(dt);
+    case WorldState::DEATH_FROM_BLACK_HOLE: {
+      UpdateBlackHoleDeathAnimation(dt);
+      break;
+    }
+    case WorldState::DEATH_FROM_ENEMY: {
+      UpdateEnemyDeathAnimation(dt);
       break;
     }
     case WorldState::WINNING: {
@@ -210,7 +214,9 @@ void GameScene::CheckCollisions() {
 
   for (auto& black_hole : game_world->black_holes) {
     if (CheckCollisionCircles(pos, kPlayerSize, black_hole.pos, black_hole.radius)) {
-      game_world->world_state = WorldState::DYING;
+      game_world->hit_pos = black_hole.pos;
+      game_world->player_hit_pos = game_world->player.position;
+      game_world->world_state = WorldState::DEATH_FROM_BLACK_HOLE;
     }
   }
 
@@ -220,7 +226,7 @@ void GameScene::CheckCollisions() {
     }
 
     if (CheckCollisionCircles(pos, kPlayerSize, enemy.shape.center, enemy.shape.radius)) {
-      game_world->world_state = WorldState::DYING;
+      game_world->world_state = WorldState::DEATH_FROM_ENEMY;
     }
 
     CheckCollisionEnemyCircleWalls(game_world->circle_walls, enemy);
@@ -274,7 +280,45 @@ void GameScene::UpdateGame(float dt) {
   player.Update(dt);
 }
 
-void GameScene::UpdateDeathAnimation(float dt) {
+void GameScene::UpdateBlackHoleDeathAnimation(float dt) {
+  game_world->death_timer.Update(dt);
+
+  auto target_zoom = 5.0f;
+  auto init_zoom = 1.0f;
+  auto percent = Remap(game_world->death_timer.Elapsed(), 0.0f, kDeathTimeout, 0.0f, 1.0f);
+  auto cubic_percent = easeInCubic(percent);
+  auto zoom = Remap(cubic_percent, 0.0f, 1.0f, init_zoom, target_zoom);
+
+  auto init_shake = 1.0f;
+  auto max_shake = 10.0f;
+  auto shake_amount = Remap(cubic_percent, 0.0f, 1.0f, init_shake, max_shake);
+  auto random_dir = GetRandomValue(0, 360) * PI / 180;
+  auto shake_vector = Vector2Rotate({0, shake_amount}, random_dir);
+
+  auto current_pos = Lerp2D(game_world->player_hit_pos, game_world->hit_pos, cubic_percent);
+  auto player_pos = game_world->player.position;
+  player_pos = current_pos;
+
+  auto& p_color = game_world->player.color;
+  const auto color_speed = 6;
+  p_color.r = Clamp(p_color.r + color_speed, 0.0f, 255.0f);
+  p_color.g = Clamp(p_color.g - color_speed, 0.0f, 255.0f);
+
+  game_world->camera.zoom = zoom;
+  game_world->camera.offset = game_world->camera.offset + shake_vector;
+  game_world->camera.rotation += 0.05f;
+
+  auto& pos = game_world->player.position;
+  auto dir = Vector2Normalize(game_world->hit_pos - pos);
+  pos = pos + dir * (balance::kPlayerSpeed / 2);
+
+  game_world->death_timer.Update(dt);
+  if (game_world->death_timer.IsPassed()) {
+    sm_->Change("gameover");
+  }
+}
+
+void GameScene::UpdateEnemyDeathAnimation(float dt) {
   game_world->death_timer.Update(dt);
   if (game_world->death_timer.IsPassed()) {
     sm_->Change("gameover");
