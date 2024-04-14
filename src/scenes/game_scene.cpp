@@ -16,15 +16,21 @@ void GameScene::Activate() {
 void GameScene::Exit() {}
 
 void GameScene::Update() {
-  if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+  auto dt = GetFrameTime();
+
+  const auto epsilon = 0.0001f;
+  auto& player = game_world->player;
+  auto speed = MovePlayer();
+  if (Vector2LengthSqr(speed) > epsilon) {
+    player.position = player.position + speed;
+    game_world->wave_cooldown.Update(dt);
+  }
+
+  if (game_world->wave_cooldown.Invoke()) {
     game_world->line_systems.emplace_back(SpawnTriangle(game_world->player.GetPlayerShape(), balance::kWaveLifetime,
                                                         balance::kWaveSegmentLifetime, balance::kWaveSpeed));
   }
 
-  auto dt = GetFrameTime();
-
-  auto& player = game_world->player;
-  MovePlayer(dt);
   game_world->camera.target = player.position;
 
   auto& line_systems = game_world->line_systems;
@@ -62,18 +68,22 @@ std::unique_ptr<GameWorld> createLevel1() {
   return std::make_unique<GameWorld>(std::move(res));
 }
 
-void GameScene::MovePlayer(float dt) {
-  auto& player = game_world->player;
-
+Vector2 GameScene::MovePlayer() {
+  Vector2 speed{};
   if (IsKeyDown(KEY_DOWN)) {
-    player.position.y += balance::kPlayerSpeed;
-  } else if (IsKeyDown(KEY_UP)) {
-    player.position.y -= balance::kPlayerSpeed;
-  } else if (IsKeyDown(KEY_RIGHT)) {
-    player.position.x += balance::kPlayerSpeed;
-  } else if (IsKeyDown(KEY_LEFT)) {
-    player.position.x -= balance::kPlayerSpeed;
+    speed.y = 1;
   }
+  if (IsKeyDown(KEY_UP)) {
+    speed.y = -1;
+  }
+  if (IsKeyDown(KEY_RIGHT)) {
+    speed.x = 1;
+  }
+  if (IsKeyDown(KEY_LEFT)) {
+    speed.x = -1;
+  }
+
+  return Vector2Normalize(speed) * balance::kPlayerSpeed;
 }
 
 void GameScene::CheckCollisions() {

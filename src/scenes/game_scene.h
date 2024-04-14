@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "CatmullRom.h"
+#include "balance.h"
 #include "const.h"
 #include "entities/black_hole.h"
 #include "entities/circle_wall.h"
@@ -14,6 +15,7 @@
 #include "entities/target.h"
 #include "lib/scene.h"
 #include "lib/scene_manager.h"
+#include "lib/tasks/cooldown.h"
 #include "line.h"
 
 struct GameWorld {
@@ -22,7 +24,8 @@ struct GameWorld {
         circle_walls{std::move(circle_walls)},
         line_systems{},
         black_holes{std::move(black_holes)},
-        target{target} {
+        target{target},
+        wave_cooldown{balance::kWaveSpawnCooldown} {
     camera = {{kCanvasWidth / 2, kCanvasHeight / 2}, player.position, 0.0f, 1.0f};
   }
   Player player;
@@ -31,6 +34,7 @@ struct GameWorld {
   std::vector<BlackHole> black_holes;
   Target target;
   Camera2D camera;
+  Cooldown wave_cooldown;
 };
 
 std::unique_ptr<GameWorld> createLevel1();
@@ -48,7 +52,7 @@ class GameScene : public Scene {
   void Draw();
 
  private:
-  void MovePlayer(float dt);
+  Vector2 MovePlayer();
   void CheckCollisions();
   SceneManager* sm_;
 };
