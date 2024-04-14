@@ -31,7 +31,7 @@ struct GameWorld {
         enemies{std::move(enemies)},
         anti_wall{anti_wall},
         target{target},
-        wave_cooldown{balance::kWaveSpawnCooldown} {
+        wave_cooldown{balance::kWaveSpawnCooldown, balance::kWaveSpawnCooldown * 0.99f} {
     camera = {{kCanvasWidth / 2, kCanvasHeight / 2}, player.position, 0.0f, 1.0f};
   }
   Player player;
