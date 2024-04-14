@@ -51,7 +51,7 @@ void toggleDebugRender() {
 }
 
 void update(void* arg) {
-  toggleDebugRender();
+  // toggleDebugRender();
   auto sm = reinterpret_cast<SceneManager*>(arg);
   // TODO: use pattern https://gameprogrammingpatterns.com/game-loop.html
   sm->Update();
