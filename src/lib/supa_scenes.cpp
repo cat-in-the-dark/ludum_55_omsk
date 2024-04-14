@@ -48,7 +48,9 @@ void TextureScene::Exit() {}
 
 TimerScene::TimerScene(SceneManager* sm, float seconds, std::string next) : sm{sm}, timer{seconds}, next{next} {}
 
-void TimerScene::Activate() {}
+void TimerScene::Activate() {
+  timer.Reset();
+}
 
 void TimerScene::Update() {
   timer.Update(GetFrameTime());
