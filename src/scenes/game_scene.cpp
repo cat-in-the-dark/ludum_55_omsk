@@ -312,7 +312,6 @@ void GameScene::UpdateBlackHoleDeathAnimation(float dt) {
   auto dir = Vector2Normalize(game_world->hit_pos - pos);
   pos = pos + dir * (balance::kPlayerSpeed / 2);
 
-  game_world->death_timer.Update(dt);
   if (game_world->death_timer.IsPassed()) {
     sm_->Change("gameover");
   }
@@ -320,6 +319,35 @@ void GameScene::UpdateBlackHoleDeathAnimation(float dt) {
 
 void GameScene::UpdateEnemyDeathAnimation(float dt) {
   game_world->death_timer.Update(dt);
+
+  auto target_zoom = 3.0f;
+  auto init_zoom = 1.0f;
+  auto percent = Remap(game_world->death_timer.Elapsed(), 0.0f, kDeathTimeout, 0.0f, 1.0f);
+  auto cubic_percent = easeInCubic(percent);
+  auto zoom = Remap(cubic_percent, 0.0f, 1.0f, init_zoom, target_zoom);
+
+  auto init_shake = 1.0f;
+  auto max_shake = 10.0f;
+  auto shake_amount = Remap(cubic_percent, 0.0f, 1.0f, init_shake, max_shake);
+  auto random_dir = GetRandomValue(0, 360) * PI / 180;
+  auto shake_vector = Vector2Rotate({0, shake_amount}, random_dir);
+
+  auto player_pos = game_world->player.position;
+
+  auto& p_color = game_world->player.color;
+  const auto color_speed = 6;
+  p_color.r = Clamp(p_color.r + color_speed, 0.0f, 255.0f);
+  p_color.g = Clamp(p_color.g - color_speed, 0.0f, 255.0f);
+
+  game_world->camera.zoom = zoom;
+  game_world->camera.target = player_pos + shake_vector;
+
+  player_pos = player_pos + shake_vector;
+
+  auto& pos = game_world->player.position;
+  auto dir = Vector2Normalize(game_world->hit_pos - pos);
+  pos = pos + dir * (balance::kPlayerSpeed / 2);
+
   if (game_world->death_timer.IsPassed()) {
     sm_->Change("gameover");
   }

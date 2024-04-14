@@ -2,6 +2,8 @@
 
 #include <raylib.h>
 
+#include "lib/renderer.h"
+
 constexpr auto kTargetColor = LIME;
 constexpr auto kRotationSpeed = PI / 4;
 
@@ -10,6 +12,7 @@ void Target::Update(float dt) {
 }
 
 void Target::Draw() {
+    // DrawThick
   DrawRectangleLines(pos.x, pos.y, kTargetSize, kTargetSize, kTargetColor);
   Vector2 line = Vector2Rotate({0.0f, kTargetSize}, angle_);
   auto end = pos + line;
