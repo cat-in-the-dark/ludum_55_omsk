@@ -66,6 +66,10 @@ void GameScene::Draw() {
     cw.Draw();
   }
 
+  for (auto& bh : game_world->black_holes) {
+    bh.Draw();
+  }
+
   for (auto& enemy : game_world->enemies) {
     if (enemy.alive) {
       enemy.Draw();
@@ -116,6 +120,22 @@ std::unique_ptr<GameWorld> createLevel3() {
                                      {{100, -100}, 32},        {{100, 100}, 32}};
   Target target(200, -300);
   return std::make_unique<GameWorld>(GameWorld{player, std::move(circles), {}, {}, anti_wall, target});
+}
+
+std::unique_ptr<GameWorld> createLevel4() {
+  auto player = Player{{0, 0}};
+  AntiCircleWall anti_wall({0, 0}, 320);
+  std::vector<BlackHole> black_holes = {{{160.0f, 0.0f}, 32.0f}};
+  Target target(210, 0);
+  return std::make_unique<GameWorld>(GameWorld{player, {}, std::move(black_holes), {}, anti_wall, target});
+}
+
+std::unique_ptr<GameWorld> createLevel5() {
+  auto player = Player{{0, 0}};
+  AntiCircleWall anti_wall({0, 0}, 320);
+  std::vector<BlackHole> black_holes = {{{160.0f, 0.0f}, 32.0f}, {{-160.0f, 0.0f}, 32.0f} {{-160.0f, 0.0f}, 32.0f}};
+  Target target(210, 0);
+  return std::make_unique<GameWorld>(GameWorld{player, {}, std::move(black_holes), {}, anti_wall, target});
 }
 
 Vector2 GameScene::MovePlayer() {
