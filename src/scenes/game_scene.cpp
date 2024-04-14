@@ -88,7 +88,7 @@ std::unique_ptr<GameWorld> createLevel0() {
   auto player = Player{{100.0f, 100.0f}};
   std::vector<CircleWall> circles = {{{250.0f, 100.0f}, 50.0f}};
   std::vector<BlackHole> black_holes = {{{320.0f, 180.0f}, 30.0f}};
-  std::vector<Enemy> enemies = {{{320, 300}, 25}};
+  std::vector<Enemy> enemies = {{{320, 300}, 25, balance::kEnemySpeed}};
   auto anti_wall = AntiCircleWall{{320, 180}, 250};
   auto res =
       GameWorld{player, std::move(circles), std::move(black_holes), std::move(enemies), anti_wall, {450.0f, 250.0f}};
@@ -134,9 +134,46 @@ std::unique_ptr<GameWorld> createLevel4() {
 std::unique_ptr<GameWorld> createLevel5() {
   auto player = Player{{0, 0}};
   AntiCircleWall anti_wall({0, 0}, 320);
-  std::vector<BlackHole> black_holes = {{{160.0f, 0.0f}, 32.0f}, {{-160.0f, 0.0f}, 32.0f}, {{-160.0f, 0.0f}, 32.0f}};
-  Target target(210, 0);
+  std::vector<BlackHole> black_holes = {
+      {{120.0f, -64.0f}, 32.0f},
+      {{240.0f, 0}, 32.0f},
+      {{120.0f, 64.0f}, 32.0f},
+  };
+  Target target(280, -5);
   return std::make_unique<GameWorld>(GameWorld{player, {}, std::move(black_holes), {}, anti_wall, target});
+}
+
+std::unique_ptr<GameWorld> createLevel6() {
+  auto player = Player{{0, 280}};
+  AntiCircleWall anti_wall({0, 0}, 320);
+  std::vector<CircleWall> circles = {{{-240, 115}, 64}, {{240, 115}, 64}};
+  std::vector<BlackHole> black_holes = {
+      {{0.0f, 160.0f}, 32.0f}, {{-130.0f, 80.0f}, 32.0f},  {{130.0f, 80.0f}, 32.0f},
+      {{0.0f, 0.0f}, 64.0f},   {{-280.0f, -64.0f}, 64.0f}, {{280.0f, -64.0f}, 64.0f},
+  };
+  Target target(0, -280);
+  return std::make_unique<GameWorld>(
+      GameWorld{player, std::move(circles), std::move(black_holes), {}, anti_wall, target});
+}
+
+std::unique_ptr<GameWorld> createLevel7() {
+  auto player = Player{{-300, 0}};
+  AntiCircleWall anti_wall({0, 0}, 480);
+
+  std::vector<CircleWall> circles;
+  for (int i = 0; i < 13; i++) {
+    circles.emplace_back(Vector2{-440 + i * 60.0f, -128.0f}, 32.0f);
+    circles.emplace_back(Vector2{-440 + i * 60.0f, 128.0f}, 32.0f);
+  }
+  std::vector<BlackHole> black_holes;
+  std::vector<Enemy> enemies = {
+      {{-440, 0}, 25, balance::kEnemySpeed},
+      {{-90, 430}, 25, balance::kEnemySpeed * 6},
+      {{-120, 400}, 25, balance::kEnemySpeed * 6},
+  };
+  Target target(110, -430);
+  return std::make_unique<GameWorld>(
+      GameWorld{player, std::move(circles), std::move(black_holes), std::move(enemies), anti_wall, target});
 }
 
 Vector2 GameScene::MovePlayer() {

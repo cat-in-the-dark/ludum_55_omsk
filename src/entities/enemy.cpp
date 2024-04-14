@@ -10,8 +10,8 @@ void Enemy::Draw() {
 
 void Enemy::Update(const Player& player, float dt) {
   if (activated) {
-    auto speed = Vector2Normalize(player.position - shape.center) * balance::kEnemySpeed;
-    shape.center = shape.center + speed;
+    auto spd = Vector2Normalize(player.position - shape.center) * speed;
+    shape.center = shape.center + spd;
     cooldown.Update(dt);
   }
 }

@@ -59,11 +59,13 @@ std::unique_ptr<GameWorld> createLevel2();
 std::unique_ptr<GameWorld> createLevel3();
 std::unique_ptr<GameWorld> createLevel4();
 std::unique_ptr<GameWorld> createLevel5();
+std::unique_ptr<GameWorld> createLevel6();
+std::unique_ptr<GameWorld> createLevel7();
 
 class GameScene : public Scene {
   std::unique_ptr<GameWorld> game_world;
-  std::vector<std::function<std::unique_ptr<GameWorld>()>> level_creators = {createLevel1, createLevel2, createLevel3,
-                                                                             createLevel4, createLevel5};
+  std::vector<std::function<std::unique_ptr<GameWorld>()>> level_creators = {
+      createLevel1, createLevel2, createLevel3, createLevel4, createLevel5, createLevel6, createLevel7};
 
  public:
   GameScene(SceneManager* sm) : sm_(sm) {}

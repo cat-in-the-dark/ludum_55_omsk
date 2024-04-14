@@ -6,10 +6,11 @@
 #include "scenes/balance.h"
 
 struct Enemy {
-  Enemy(Vector2 pos, float radius) : shape{pos, radius} {}
+  Enemy(Vector2 pos, float radius, float speed) : shape{pos, radius}, speed(speed) {}
   void Draw();
   void Update(const Player& player, float dt);
   Circle shape;
+  float speed;
 
   // TODO: Learn how to delete elements from vectors!
   bool alive = true;
