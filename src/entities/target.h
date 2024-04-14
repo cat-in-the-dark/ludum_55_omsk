@@ -3,7 +3,7 @@
 #include "entity.h"
 #include "lib/types.h"
 
-constexpr auto kTargetSize = 20.0f;
+constexpr auto kTargetSize = 30.0f;
 
 class Target : public Entity {
  public:

@@ -12,6 +12,10 @@ inline float easeInCubic(float x) {
   return x * x * x;
 }
 
+inline Vector2 Scale2D(Vector2 v, const Vector2& scale) {
+  return {v.x * scale.x, v.y * scale.y};
+}
+
 inline Vector2 Lerp2D(const Vector2& v1, const Vector2& v2, float t) {
   return Vector2{Lerp(v1.x, v2.x, t), Lerp(v1.y, v2.y, t)};
 }
