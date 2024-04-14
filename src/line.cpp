@@ -76,7 +76,6 @@ void Line::Stop() {
   speed = 0;
 }
 
-LineSystem::LineSystem(float lifetime) {}
 void LineSystem::AddParticle(const Line& particle) {
   particles.emplace_back(particle);
 }
@@ -93,7 +92,7 @@ void LineSystem::Draw() {
 }
 
 LineSystem SpawnTriangle(Triangle2D tri, float lifetime, float segment_lifetime, float speed) {
-  LineSystem ls(lifetime * 2);
+  LineSystem ls;
 
   auto triDir = Tri60();
   float offset = 4;
@@ -119,5 +118,17 @@ LineSystem SpawnTriangle(Triangle2D tri, float lifetime, float segment_lifetime,
     ls.AddParticle(Line(e3 + dir3 * offset, dir3, kPlayerColor, speed, lifetime, segment_lifetime));
   }
 
+  return ls;
+}
+
+LineSystem SpawnCircle(const Circle& circle, float lifetime, float segment_lifetime, float speed, int n_lines) {
+  LineSystem ls;
+
+  for (int i = 0; i < n_lines; i++) {
+    float angle = i * (2.0 * PI) / float(n_lines);
+    Vector2 dir = {std::cosf(angle), std::sinf(angle)};
+    Vector2 p = circle.center + dir * circle.radius;
+    ls.AddParticle(Line(p + dir, dir, kEnemyColor, speed, lifetime, segment_lifetime));
+  }
   return ls;
 }

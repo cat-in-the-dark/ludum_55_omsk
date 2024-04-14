@@ -17,6 +17,8 @@ void TestRenderScene::Exit() {}
 void TestRenderScene::Update() {
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
     line_systems.emplace_back(SpawnTriangle(tri, balance::kWaveLifetime, balance::kWaveSegmentLifetime, 3));
+    line_systems.emplace_back(
+        SpawnCircle(Circle{Vector2{50, 100}, 128}, balance::kWaveLifetime, balance::kWaveSegmentLifetime, 3, 36));
   }
 
   anti_wall.Update(GetFrameTime());

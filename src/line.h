@@ -49,13 +49,11 @@ class Line {
 };
 
 class LineSystem {
-  float lifetime;
   bool alive = true;
 
  public:
   std::vector<Line> particles;
 
-  LineSystem(float lifetime);
   void AddParticle(const Line& particle);
 
   void Update(float dt);
@@ -66,3 +64,4 @@ class LineSystem {
 };
 
 LineSystem SpawnTriangle(Triangle2D tri, float lifetime, float segment_lifetime, float speed);
+LineSystem SpawnCircle(const Circle& circle, float lifetime, float segment_lifetime, float speed, int n_lines);
