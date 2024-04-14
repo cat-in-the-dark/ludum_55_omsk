@@ -306,7 +306,7 @@ void GameScene::UpdateBlackHoleDeathAnimation(float dt) {
 
   game_world->camera.zoom = zoom;
   game_world->camera.offset = game_world->camera.offset + shake_vector;
-  game_world->camera.rotation += 0.05f;
+  game_world->camera.rotation += 0.5f;
 
   auto& pos = game_world->player.position;
   auto dir = Vector2Normalize(game_world->hit_pos - pos);
