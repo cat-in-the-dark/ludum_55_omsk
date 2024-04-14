@@ -126,7 +126,7 @@ LineSystem SpawnCircle(const Circle& circle, float lifetime, float segment_lifet
 
   for (int i = 0; i < n_lines; i++) {
     float angle = i * (2.0 * PI) / float(n_lines);
-    Vector2 dir = {std::cosf(angle), std::sinf(angle)};
+    Vector2 dir = {cosf(angle), sinf(angle)};
     Vector2 p = circle.center + dir * circle.radius;
     ls.AddParticle(Line(p + dir, dir, kEnemyColor, speed, lifetime, segment_lifetime));
   }
