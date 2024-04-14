@@ -116,7 +116,7 @@ int main() {
   emscripten_set_main_loop_arg(update, &sm, 0, 1);
 #else
   SetTargetFPS(60);
-  while (!WindowShouldClose()) {
+  while (true) {
     update(&sm);
   }
 #endif
