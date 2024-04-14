@@ -26,6 +26,10 @@ static RenderTexture2D canvas;
 static Rectangle canvasRect = {0, 0, kCanvasWidth, -kCanvasHeight};
 static Vector2 canvasOrigin = {0, 0};
 
+// Это костыль чтобы выключить шейдер вне game scene
+constexpr auto GAME_SCENE = "game";
+constexpr auto RENDER_SCENE = "test_render";
+
 static Rectangle get_pixel_perfect_layout(int cw, int ch) {
   float sw = GetScreenWidth();
   float sh = GetScreenHeight();
@@ -53,9 +57,15 @@ void update(void* arg) {
 
   Rectangle windowRec = get_pixel_perfect_layout(kCanvasWidth, kCanvasHeight);
   BeginDrawing();
-  BeginShaderMode(bloom);
+  // FIXME: сцены должны быть рекурсивно вложенными как в html. А то шейдер не выключить
+  auto isGameScene = (sm->Current() == GAME_SCENE) || (sm->Current() == RENDER_SCENE);
+  if (isGameScene) {
+    BeginShaderMode(bloom);
+  }
   DrawTexturePro(canvas.texture, canvasRect, windowRec, canvasOrigin, 0.0f, WHITE);
-  EndShaderMode();
+  if (isGameScene) {
+    EndShaderMode();
+  }
   EndDrawing();
 }
 
@@ -70,17 +80,17 @@ int main() {
   SceneManager sm;
 
   sm.Register<ComboScene>("logo")
-      ->With<TextureScene>(LoadTexture("assets/logo.png"))
+      ->With<TextureScene>(LoadTexture("assets/logo.png"), kCanvasWidth, kCanvasHeight)
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
 
   sm.Register<ComboScene>("title")
-      ->With<TextureScene>(LoadTexture("assets/main.png"))
+      ->With<TextureScene>(LoadTexture("assets/main.png"), kCanvasWidth, kCanvasHeight)
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
 
   sm.Register<ComboScene>("game")->With<GameScene>(&sm)->With<KeyAwaitScene>(&sm, KEY_SPACE, "test_collisions");
 
   sm.Register<ComboScene>("next")
-      ->With<TextureScene>(LoadTexture("assets/main.png"))
+      ->With<TextureScene>(LoadTexture("assets/main.png"), kCanvasWidth, kCanvasHeight)
       ->With<TimerScene>(&sm, 3.0f, "game")
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
 
@@ -91,21 +101,17 @@ int main() {
   sm.Register<ComboScene>("stress_test")->With<StressTestScene>()->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
 
   sm.Register<ComboScene>("gameover")
-      ->With<TextureScene>(LoadTexture("assets/lose.png"))
+      ->With<TextureScene>(LoadTexture("assets/lose.png"), kCanvasWidth, kCanvasHeight)
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "logo");
 
-  sm.Register<ComboScene>("win")
-      ->With<TextureScene>(LoadTexture("assets/main.png"))
+  sm.Register<ComboScene>("gamewin")
+      ->With<TextureScene>(LoadTexture("assets/winsc_2.png"), kCanvasWidth, kCanvasHeight)
       ->With<TimerScene>(&sm, 3.0f, "logo")
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "logo");
 
-  // sm.Register<ComboScene>("gamewin")
-  //     ->With<TextureScene>(LoadTexture("assets/win.png"))
-  //     ->With<KeyAwaitScene>(&sm, KEY_SPACE, "title");
-
   sm.Register<ComboScene>("test_render")->With<TestRenderScene>()->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
 
-  sm.Change("test_render");
+  sm.Change("title");
 
 #if defined(PLATFORM_WEB)
   emscripten_set_main_loop_arg(update, &sm, 0, 1);

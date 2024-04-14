@@ -56,9 +56,11 @@ class KeyAwaitScene : public Scene {
 
 class TextureScene : public Scene {
   Texture2D tex;
+  int width;
+  int height;
 
  public:
-  TextureScene(Texture2D tex);
+  TextureScene(Texture2D tex, int width, int height);
   void Activate();
   void Update();
   void Draw();

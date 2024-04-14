@@ -36,11 +36,13 @@ void KeyAwaitScene::Update() {
 void KeyAwaitScene::Draw() {}
 void KeyAwaitScene::Exit() {}
 
-TextureScene::TextureScene(Texture2D tex) : tex(tex) {}
+TextureScene::TextureScene(Texture2D tex, int width, int height) : tex(tex), width(width), height(height) {}
 void TextureScene::Activate() {}
 void TextureScene::Update() {}
 void TextureScene::Draw() {
-  DrawTexture(tex, 0, 0, WHITE);
+  Rectangle src{0, 0, float(tex.width), float(tex.height)};
+  Rectangle dst{0, 0, float(width), float(height)};
+  DrawTexturePro(tex, src, dst, {0, 0}, 0.0f, WHITE);
 }
 void TextureScene::Exit() {}
 
