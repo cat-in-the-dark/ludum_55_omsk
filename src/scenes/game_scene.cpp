@@ -22,16 +22,16 @@ void GameScene::Update() {
   const auto epsilon = 0.0001f;
   auto& player = game_world->player;
   auto speed = MovePlayer();
-  if (Vector2LengthSqr(speed) > epsilon) {
-    player.position = player.position + speed;
-    game_world->wave_cooldown.Update(dt);
-  }
+  player.position = player.position + speed;
 
   auto& line_systems = game_world->line_systems;
 
-  if (game_world->wave_cooldown.Invoke()) {
-    line_systems.emplace_back(SpawnTriangle(game_world->player.GetPlayerShape(), balance::kWaveLifetime,
-                                            balance::kWaveSegmentLifetime, balance::kWaveSpeed));
+  game_world->wave_cooldown.Update(dt);
+  if (Vector2LengthSqr(speed) > epsilon) {
+    if (game_world->wave_cooldown.Invoke()) {
+      line_systems.emplace_back(SpawnTriangle(game_world->player.GetPlayerShape(), balance::kWaveLifetime,
+                                              balance::kWaveSegmentLifetime, balance::kWaveSpeed));
+    }
   }
 
   game_world->camera.target = player.position;
