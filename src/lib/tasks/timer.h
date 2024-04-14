@@ -11,4 +11,5 @@ class Timer {
   bool IsPassed();
   void Update(float dt);
   void Reset();
+  float Elapsed();
 };

@@ -7,6 +7,7 @@
 #include "const.h"
 #include "entities/player.h"
 #include "lib/collisions.h"
+#include "lib/math.h"
 #include "lib/renderer.h"
 #include "lib/types.h"
 
@@ -133,7 +134,7 @@ std::unique_ptr<GameWorld> createLevel4() {
 std::unique_ptr<GameWorld> createLevel5() {
   auto player = Player{{0, 0}};
   AntiCircleWall anti_wall({0, 0}, 320);
-  std::vector<BlackHole> black_holes = {{{160.0f, 0.0f}, 32.0f}, {{-160.0f, 0.0f}, 32.0f} {{-160.0f, 0.0f}, 32.0f}};
+  std::vector<BlackHole> black_holes = {{{160.0f, 0.0f}, 32.0f}, {{-160.0f, 0.0f}, 32.0f}, {{-160.0f, 0.0f}, 32.0f}};
   Target target(210, 0);
   return std::make_unique<GameWorld>(GameWorld{player, {}, std::move(black_holes), {}, anti_wall, target});
 }
@@ -237,15 +238,29 @@ void GameScene::UpdateGame(float dt) {
 }
 
 void GameScene::UpdateDeathAnimation(float dt) {
-  sm_->Change("gameover");
+  game_world->death_timer.Update(dt);
+  if (game_world->death_timer.IsPassed()) {
+    sm_->Change("gameover");
+  }
 }
 
 void GameScene::UpdateWinAnimation(float dt) {
-  current_level++;
-  if (current_level >= level_creators.size()) {
-    current_level = 0;
-    sm_->Change("gamewin");
-  } else {
-    sm_->Change("next");
+  game_world->win_timer.Update(dt);
+
+  auto target_zoom = 3.0f;
+  auto init_zoom = 1.0f;
+  auto percent = Remap(game_world->win_timer.Elapsed(), 0.0f, kWinTimeout, 0.0f, 1.0f);
+  auto cubicPercent = easeOutCubic(percent);
+  auto zoom = Remap(cubicPercent, 0.0f, 1.0f, init_zoom, target_zoom);
+
+  game_world->camera.zoom = zoom;
+  if (game_world->win_timer.IsPassed()) {
+    current_level++;
+    if (current_level >= level_creators.size()) {
+      current_level = 0;
+      sm_->Change("gamewin");
+    } else {
+      sm_->Change("next");
+    }
   }
 }
