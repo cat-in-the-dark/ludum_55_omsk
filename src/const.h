@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ranlib.h>
+#include <raylib.h>
 
 constexpr auto kCanvasWidth = 640;
 constexpr auto kCanvasHeight = 360;
