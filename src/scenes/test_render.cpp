@@ -6,7 +6,8 @@
 TestRenderScene::TestRenderScene()
     : tri({{0 + 300, 200 + 10.0f},
            {300 + -10 * float(std::sqrt(3)) / 2.0f, 200 + 25.0f},
-           {300 + 10.0f * float(std::sqrt(3)) / 2.0f, 200 + 25.0f}}) {}
+           {300 + 10.0f * float(std::sqrt(3)) / 2.0f, 200 + 25.0f}}),
+      anti_wall({320, 180}, 250) {}
 void TestRenderScene::Activate() {
   black_holes.emplace_back(Vector2{500, 300}, 32);
   circle_wall.emplace_back(Vector2{50, 100}, 128);
@@ -18,6 +19,7 @@ void TestRenderScene::Update() {
     line_systems.emplace_back(SpawnTriangle(tri, balance::kWaveLifetime, balance::kWaveSegmentLifetime, 3));
   }
 
+  anti_wall.Update(GetFrameTime());
   for (auto& ls : line_systems) {
     ls.Update(GetFrameTime());
   }
@@ -27,6 +29,8 @@ void TestRenderScene::Update() {
 void TestRenderScene::Draw() {
   ClearBackground(BLACK);
   DrawTriangle(tri.p1, tri.p2, tri.p3, RED);
+
+  anti_wall.Draw();
 
   for (auto& bh : black_holes) {
     bh.Draw();
@@ -40,10 +44,22 @@ void TestRenderScene::Draw() {
   }
 }
 
+void CheckCollisionAntiWall(const AntiCircleWall& wall, Line& line) {
+  const auto& pos = line.Pos();
+
+  if (!CheckCollisionPointCircle(pos, wall.pos, wall.radius)) {
+    auto n = Vector2Normalize(pos - wall.pos);
+    auto d = Vector2Refract(line.dir, n, 1);
+    line.dir = d;
+  }
+}
+
 void TestRenderScene::CheckCollisions() {
   for (auto& ls : line_systems) {
     for (auto& particle : ls.particles) {
       const auto& pos = particle.Pos();
+
+      CheckCollisionAntiWall(anti_wall, particle);
 
       for (auto& bh : black_holes) {
         float dist = Vector2Distance(bh.pos, pos);
