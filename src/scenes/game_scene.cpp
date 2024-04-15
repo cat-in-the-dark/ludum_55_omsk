@@ -172,8 +172,8 @@ std::unique_ptr<GameWorld> createLevel7() {
   std::vector<BlackHole> black_holes;
   std::vector<Enemy> enemies = {
       {{-440, 0}, 25, balance::kEnemySpeed},
-      {{-90, 430}, 25, balance::kEnemySpeed * 6},
-      {{-120, 400}, 25, balance::kEnemySpeed * 6},
+      {{-90, 430}, 25, balance::kEnemySpeed * 6, balance::kEnemyWaveSpawnCooldown / 2},
+      {{-120, 400}, 25, balance::kEnemySpeed * 6, balance::kEnemyWaveSpawnCooldown / 2},
   };
   Target target(110, -430);
   return std::make_unique<GameWorld>(
