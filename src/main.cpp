@@ -45,13 +45,20 @@ static Rectangle get_pixel_perfect_layout(int cw, int ch) {
 }
 
 void toggleDebugRender() {
-  if (IsKeyPressed(KEY_F)) {
+  if (IsKeyPressed(KEY_PERIOD)) {
     kDebugRender = !kDebugRender;
+  }
+}
+
+void checkFullscreen() {
+  if (IsKeyPressed(KEY_F)) {
+    ToggleFullscreen();
   }
 }
 
 void update(void* arg) {
   // toggleDebugRender();
+  checkFullscreen();
   auto sm = reinterpret_cast<SceneManager*>(arg);
   // TODO: use pattern https://gameprogrammingpatterns.com/game-loop.html
   sm->Update();
@@ -82,7 +89,6 @@ int main() {
   bloom = LoadShader(0, TextFormat("assets/shaders/glsl%i/bloom.fs", GLSL_VERSION));
   canvas = LoadRenderTexture(kCanvasWidth, kCanvasHeight);
   SetTextureFilter(canvas.texture, TEXTURE_FILTER_POINT);
-  // ToggleFullscreen();
 
   SceneManager sm;
 
@@ -100,7 +106,7 @@ int main() {
       ->With<TextureScene>(LoadTexture("assets/main.png"), kCanvasWidth, kCanvasHeight)
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
 
-  sm.Register<ComboScene>("game")->With<GameScene>(&sm)->With<KeyAwaitScene>(&sm, KEY_ESCAPE, "reset");
+  sm.Register<ComboScene>("game")->With<GameScene>(&sm)->With<KeyAwaitScene>(&sm, KEY_R, "reset");
 
   sm.Register<ComboScene>("next")
       ->With<TextureScene>(LoadTexture("assets/next.png"), kCanvasWidth, kCanvasHeight)
@@ -121,7 +127,7 @@ int main() {
   emscripten_set_main_loop_arg(update, &sm, 0, 1);
 #else
   SetTargetFPS(60);
-  while (true) {
+  while (!WindowShouldClose()) {
     update(&sm);
   }
 #endif
