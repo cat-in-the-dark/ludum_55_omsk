@@ -45,6 +45,15 @@ if(SANITIZE)
     endif()
 endif()
 
+if (MSVC)
+    set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+    set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR})
+    set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR})
+    # etc for the other available configuration types (MinSizeRel, RelWithDebInfo)
+endif (MSVC)
+
+file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}/)
+
 if(EMSCRIPTEN)
     message("WAVE: Building for web")
     set(PLATFORM Web)
@@ -55,8 +64,6 @@ if(EMSCRIPTEN)
 
     add_definitions(-DPLATFORM_WEB)
     add_definitions(-DUSE_WASM)
-
-    file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}/)
 
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-Os -s ASSERTIONS=1 -s ALLOW_MEMORY_GROWTH=1 --no-heap-copy -s GL_ENABLE_GET_PROC_ADDRESS -s USE_GLFW=3 --embed-file assets/ --shell-file ${CMAKE_SOURCE_DIR}/src/index.html")
 
