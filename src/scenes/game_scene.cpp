@@ -283,8 +283,8 @@ void GameScene::UpdateGame(float dt) {
 void GameScene::UpdateBlackHoleDeathAnimation(float dt) {
   game_world->death_timer.Update(dt);
 
-  auto target_zoom = 5.0f;
-  auto init_zoom = 1.0f;
+  auto target_zoom = 10.0f;
+  auto init_zoom = kCameraZoom;
   auto percent = Remap(game_world->death_timer.Elapsed(), 0.0f, kDeathTimeout, 0.0f, 1.0f);
   auto cubic_percent = easeInCubic(percent);
   auto zoom = Remap(cubic_percent, 0.0f, 1.0f, init_zoom, target_zoom);
@@ -340,8 +340,8 @@ void GameScene::UpdateBlackHoleDeathAnimation(float dt) {
 void GameScene::UpdateEnemyDeathAnimation(float dt) {
   game_world->death_timer.Update(dt);
 
-  auto target_zoom = 3.0f;
-  auto init_zoom = 1.0f;
+  auto target_zoom = 5.0f;
+  auto init_zoom = kCameraZoom;
   auto percent = Remap(game_world->death_timer.Elapsed(), 0.0f, kDeathTimeout, 0.0f, 1.0f);
   auto cubic_percent = easeInCubic(percent);
   auto zoom = Remap(cubic_percent, 0.0f, 1.0f, init_zoom, target_zoom);
@@ -381,8 +381,8 @@ void GameScene::UpdateWinAnimation(float dt) {
                                                         balance::kWaveSegmentLifetime, balance::kWaveSpeed));
   }
 
-  auto target_zoom = 3.0f;
-  auto init_zoom = 1.0f;
+  auto target_zoom = 5.0f;
+  auto init_zoom = kCameraZoom;
   auto percent = Remap(game_world->win_timer.Elapsed(), 0.0f, kWinTimeout, 0.0f, 1.0f);
   auto cubicPercent = easeOutCubic(percent);
   auto zoom = Remap(cubicPercent, 0.0f, 1.0f, init_zoom, target_zoom);

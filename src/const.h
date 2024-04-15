@@ -24,4 +24,6 @@ constexpr auto kDeathTimeout = 2.0f;
 constexpr auto kWinTimeout = 2.0f;
 constexpr auto kSpawnDelay = 0.05f;
 
+constexpr auto kCameraZoom = 2.0f;
+
 extern unsigned int current_level;

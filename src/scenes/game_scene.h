@@ -42,7 +42,7 @@ struct GameWorld {
         death_timer{kDeathTimeout},
         win_timer{kWinTimeout},
         win_spawn_timer{kSpawnDelay} {
-    camera = {{kCanvasWidth / 2, kCanvasHeight / 2}, player.position, 0.0f, 2.0f};
+    camera = {{kCanvasWidth / 2, kCanvasHeight / 2}, player.position, 0.0f, kCameraZoom};
   }
   Player player;
   std::vector<CircleWall> circle_walls;
