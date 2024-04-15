@@ -6,7 +6,6 @@
 #include <memory>
 #include <vector>
 
-#include "CatmullRom.h"
 #include "balance.h"
 #include "const.h"
 #include "entities/anti_wall.h"

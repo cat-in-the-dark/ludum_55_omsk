@@ -12,10 +12,7 @@ file(GLOB_RECURSE HEADERS src/*.h)
 
 set(THIRDPARTY_DIR ${CMAKE_SOURCE_DIR}/vendor)
 
-set(SPLINE_DIR ${THIRDPARTY_DIR}/cpp-spline/spline/src/main/cpp)
-file(GLOB_RECURSE SPLINE_SOURCES ${SPLINE_DIR}/*.cpp)
-
-add_executable(${PROJECT_NAME} ${SOURCES} ${SPLINE_SOURCES} ${HEADERS})
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # warning level
 if(MSVC)
@@ -71,7 +68,6 @@ add_subdirectory(${THIRDPARTY_DIR}/raylib)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     src
-    ${SPLINE_DIR}
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC SYSTEM vendor/raylib/src)
