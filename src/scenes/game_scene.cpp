@@ -182,16 +182,16 @@ std::unique_ptr<GameWorld> createLevel7() {
 
 Vector2 GameScene::MovePlayer() {
   Vector2 speed{};
-  if (IsKeyDown(KEY_DOWN)) {
+  if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
     speed.y = 1;
   }
-  if (IsKeyDown(KEY_UP)) {
+  if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) {
     speed.y = -1;
   }
-  if (IsKeyDown(KEY_RIGHT)) {
+  if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
     speed.x = 1;
   }
-  if (IsKeyDown(KEY_LEFT)) {
+  if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
     speed.x = -1;
   }
 
