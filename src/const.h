@@ -2,12 +2,12 @@
 
 #include <raylib.h>
 
-constexpr auto kCanvasWidth = 640;
-constexpr auto kCanvasHeight = 360;
+constexpr auto kCanvasWidth = 1280;
+constexpr auto kCanvasHeight = 720;
 
 // 80/45
-constexpr auto kWindowWidth = kCanvasWidth * 2;
-constexpr auto kWindowHeight = kCanvasHeight * 2;
+constexpr auto kWindowWidth = kCanvasWidth;
+constexpr auto kWindowHeight = kCanvasHeight;
 
 constexpr auto kLineThickness = 3.0f;
 
