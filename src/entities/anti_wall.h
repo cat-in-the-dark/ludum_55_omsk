@@ -8,6 +8,6 @@ class AntiCircleWall {
   float radius;
 
   AntiCircleWall(Vector2 pos, float radius);
-  void Update(float dt);
+  void Update();
   void Draw();
 };

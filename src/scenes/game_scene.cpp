@@ -277,7 +277,7 @@ void GameScene::UpdateGame(float dt) {
 
   CheckCollisions();
 
-  player.Update(dt);
+  player.Update();
 }
 
 void GameScene::UpdateBlackHoleDeathAnimation(float dt) {

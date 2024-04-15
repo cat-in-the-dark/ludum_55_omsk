@@ -2,6 +2,8 @@
 
 #include <raylib.h>
 
+#include <algorithm>
+
 #include "const.h"
 #include "lib/renderer.h"
 

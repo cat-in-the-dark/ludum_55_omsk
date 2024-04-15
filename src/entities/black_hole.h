@@ -8,6 +8,6 @@ class BlackHole {
   float radius;
 
   BlackHole(Vector2 pos, float radius);
-  void Update(float dt);
+  void Update();
   void Draw();
 };

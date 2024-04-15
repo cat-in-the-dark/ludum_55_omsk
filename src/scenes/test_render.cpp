@@ -22,7 +22,7 @@ void TestRenderScene::Update() {
         SpawnCircle(Circle{Vector2{50, 100}, 128}, balance::kWaveLifetime, balance::kWaveSegmentLifetime, 3, 36));
   }
 
-  anti_wall.Update(GetFrameTime());
+  anti_wall.Update();
   for (auto& ls : line_systems) {
     ls.Update(GetFrameTime());
   }

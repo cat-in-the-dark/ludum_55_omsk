@@ -4,15 +4,14 @@
 
 #include <memory>
 
-#include "entity.h"
 #include "lib/types.h"
 
 constexpr auto kPlayerSize = 15.0f;
 
-class Player : public Entity {
+class Player {
  public:
   Player(Vector2&& position) : shape{createPlayerShape(kPlayerSize)}, position(std::move(position)) {}
-  void Update(float dt);
+  void Update();
   void Draw();
 
   Triangle2D shape;

@@ -2,14 +2,18 @@
 
 #include <raylib.h>
 
+#if (defined(__GNUC__) || defined(__clang__))
 // Synonim for #pragma clang diagnostic
 // see https://clang.llvm.org/docs/UsersManual.html#controlling-diagnostics-via-pragmas
 #pragma GCC diagnostic push
 // suppress "missing field 'y' initializer" in the code like this:
 // Vector2 result = { 0 };
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#endif
 #include <raymath.h>
+#if (defined (__GNUC__) || defined(__clang__))
 #pragma GCC diagnostic pop
+#endif
 
 struct Triangle2D {
   Vector2 p1;

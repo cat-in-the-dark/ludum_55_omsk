@@ -16,7 +16,7 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # warning level
 if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX /wd4244)
 else()
     target_compile_options(${PROJECT_NAME} PRIVATE
         -pedantic

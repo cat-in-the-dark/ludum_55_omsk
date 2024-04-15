@@ -4,7 +4,7 @@
 
 BlackHole::BlackHole(Vector2 pos, float radius) : pos(pos), radius(radius) {}
 
-void BlackHole::Update(float dt) {}
+void BlackHole::Update() {}
 
 void BlackHole::Draw() {
   if (kDebugRender) {
