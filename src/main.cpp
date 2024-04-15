@@ -86,6 +86,11 @@ int main() {
 
   SceneManager sm;
 
+  sm.Register<ComboScene>("reset")->With<LambdaScene>([&sm]() {
+    current_level = 0;
+    sm.Change("logo");
+  });
+
   sm.Register<ComboScene>("logo")
       ->With<TextureScene>(LoadTexture("assets/logo.png"), kCanvasWidth, kCanvasHeight)
       ->With<TimerScene>(&sm, 3.0f, "title")
@@ -95,7 +100,7 @@ int main() {
       ->With<TextureScene>(LoadTexture("assets/main.png"), kCanvasWidth, kCanvasHeight)
       ->With<KeyAwaitScene>(&sm, KEY_SPACE, "game");
 
-  sm.Register<ComboScene>("game")->With<GameScene>(&sm)->With<KeyAwaitScene>(&sm, KEY_ESCAPE, "logo");
+  sm.Register<ComboScene>("game")->With<GameScene>(&sm)->With<KeyAwaitScene>(&sm, KEY_ESCAPE, "reset");
 
   sm.Register<ComboScene>("next")
       ->With<TextureScene>(LoadTexture("assets/next.png"), kCanvasWidth, kCanvasHeight)

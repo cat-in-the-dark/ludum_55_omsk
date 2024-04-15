@@ -62,3 +62,15 @@ void TimerScene::Update() {
 void TimerScene::Draw() {}
 
 void TimerScene::Exit() {}
+
+LambdaScene::LambdaScene(std::function<void()> callback) : callback(callback) {}
+
+void LambdaScene::Activate() {}
+
+void LambdaScene::Update() {
+  callback();
+}
+
+void LambdaScene::Draw() {}
+
+void LambdaScene::Exit() {}

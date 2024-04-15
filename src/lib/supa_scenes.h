@@ -2,6 +2,7 @@
 
 #include <raylib.h>
 
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -35,6 +36,17 @@ class TimerScene : public Scene {
 
  public:
   TimerScene(SceneManager* sm, float seconds, std::string next);
+  void Activate();
+  void Update();
+  void Draw();
+  void Exit();
+};
+
+class LambdaScene : public Scene {
+  std::function<void()> callback;
+
+ public:
+  LambdaScene(std::function<void()> callback);
   void Activate();
   void Update();
   void Draw();
