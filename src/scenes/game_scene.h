@@ -17,6 +17,7 @@
 #include "lib/scene.h"
 #include "lib/scene_manager.h"
 #include "lib/tasks/cooldown.h"
+#include "lib/tasks/oneshot.h"
 #include "lib/tasks/timer.h"
 #include "lib/types.h"
 #include "line.h"
@@ -37,8 +38,10 @@ struct GameWorld {
         world_state{WorldState::IN_GAME},
         hit_pos{0, 0},
         player_hit_pos{0, 0},
+        player_init_shape{player.shape},
         death_timer{kDeathTimeout},
-        win_timer{kWinTimeout} {
+        win_timer{kWinTimeout},
+        win_spawn_timer{kSpawnDelay} {
     camera = {{kCanvasWidth / 2, kCanvasHeight / 2}, player.position, 0.0f, 1.0f};
   }
   Player player;
@@ -53,8 +56,10 @@ struct GameWorld {
   WorldState world_state;
   Vector2 hit_pos;
   Vector2 player_hit_pos;
+  Triangle2D player_init_shape;
   Timer death_timer;
   Timer win_timer;
+  OneShot win_spawn_timer;
 };
 
 std::unique_ptr<GameWorld> createLevel1();

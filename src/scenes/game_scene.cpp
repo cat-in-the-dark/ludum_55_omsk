@@ -296,21 +296,41 @@ void GameScene::UpdateBlackHoleDeathAnimation(float dt) {
   auto shake_vector = Vector2Rotate({0, shake_amount}, random_dir);
 
   auto current_pos = Lerp2D(game_world->player_hit_pos, game_world->hit_pos, cubic_percent);
-  auto player_pos = game_world->player.position;
+  auto& player = game_world->player;
+  auto& player_pos = game_world->player.position;
   player_pos = current_pos;
 
+  auto init_scale = 1.0f;
+  auto end_scale = 0.1f;
+  auto scale_amount = Remap(cubic_percent, 0.0f, 1.0f, init_scale, end_scale);
+
+  auto init_rotation = 0.0f;
+  auto end_rotation = 4 * PI;
+  auto rotation_amount = Remap(cubic_percent, 0.0f, 1.0f, init_rotation, end_rotation);
+
+  auto p1 = Vector2Rotate(game_world->player_init_shape.p1 * scale_amount, rotation_amount);
+  auto p2 = Vector2Rotate(game_world->player_init_shape.p2 * scale_amount, rotation_amount);
+  auto p3 = Vector2Rotate(game_world->player_init_shape.p3 * scale_amount, rotation_amount);
+
+  player.shape.p1 = p1;
+  player.shape.p2 = p2;
+  player.shape.p3 = p3;
+
+  auto init_r = kPlayerColor.r;
+  auto init_g = kPlayerColor.g;
+  auto end_r = 255;
+  auto end_g = 0;
+
+  auto current_r = static_cast<unsigned char>(Clamp(Remap(cubic_percent, 0.0f, 1.0f, init_r, end_r), 0.0f, 255.0f));
+  auto current_g = static_cast<unsigned char>(Clamp(Remap(cubic_percent, 0.0f, 1.0f, init_g, end_g), 0.0f, 255.0f));
+
   auto& p_color = game_world->player.color;
-  const auto color_speed = 6;
-  p_color.r = Clamp(p_color.r + color_speed, 0.0f, 255.0f);
-  p_color.g = Clamp(p_color.g - color_speed, 0.0f, 255.0f);
+  p_color.r = current_r;
+  p_color.g = current_g;
 
   game_world->camera.zoom = zoom;
   game_world->camera.offset = game_world->camera.offset + shake_vector;
   game_world->camera.rotation += 0.5f;
-
-  auto& pos = game_world->player.position;
-  auto dir = Vector2Normalize(game_world->hit_pos - pos);
-  pos = pos + dir * (balance::kPlayerSpeed / 2);
 
   if (game_world->death_timer.IsPassed()) {
     sm_->Change("gameover");
@@ -355,6 +375,11 @@ void GameScene::UpdateEnemyDeathAnimation(float dt) {
 
 void GameScene::UpdateWinAnimation(float dt) {
   game_world->win_timer.Update(dt);
+  game_world->win_spawn_timer.Update(dt);
+  if (game_world->win_spawn_timer.IsPassed()) {
+    game_world->line_systems.emplace_back(SpawnTriangle(game_world->player.GetPlayerShape(), balance::kWaveLifetime,
+                                                        balance::kWaveSegmentLifetime, balance::kWaveSpeed));
+  }
 
   auto target_zoom = 3.0f;
   auto init_zoom = 1.0f;
